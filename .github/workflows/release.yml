@@ -47,6 +47,7 @@ jobs:
         jei(optional){curseforge:238222}{modrinth:u6dRKJwZ}
         rei(optional){curseforge:310111}{modrinth:nfn13YXA}
         emi(optional){curseforge:580555}{modrinth:fRiHVvU7}
+        better-advanced-tooltiips(required){curseforge:1637623}{modrinth:iHLDc0eo}
       target_version: ${{ github.event.inputs.target_version }}
       update_type: ${{ github.event.inputs.update_type }}
       release_type: ${{ github.event.inputs.release_type }}
