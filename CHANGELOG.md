@@ -2,6 +2,8 @@
 
 ## Unreleased
 - Fix invalid fluid lookup for fluid tag ingredients
+- Stop bundling Better Advanced Tooltips to fix CTD (use the one from CF / MR instead)
+- use TypeWrappers for HolderSets (#1169), this should fix some wrapping issues
 
 ## [8.0.4] - 2026-07-23
 
