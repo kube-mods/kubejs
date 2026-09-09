@@ -1,9 +1,21 @@
 # changelog
 
 ## Unreleased
-- /
+
+this release contains the following fixes ported from 1.21:
+
+- fix: unpredictable tick behaviour for scheduled events (#763)
+- fix: restore inventory on disconnect (#962)
+- fix / hack: numeric string keys in recipe patterns (#1177)
+- fix: smithing template name hints (#974)
+- fix: recipe component keys listed in random order (#1035)
+- fix: NPE race in TargetedEventHandler.hasListeners during reload (#1027)
+- fix: scheduleRepeating never repeating (#863)
+- fix: keepIngredient duplicates stackables (#1174)
+- fix: index issue in client asset pack injector (thanks to @purplesyringa for pointing this out in #1181)
 
 ## [8.0.5] - 2026-09-08
+- 
 - Fix invalid fluid lookup for fluid tag ingredients
 - Stop bundling Better Advanced Tooltips to fix CTD (use the one from CF / MR instead)
 - use TypeWrappers for HolderSets (#1169), this should fix some wrapping issues
