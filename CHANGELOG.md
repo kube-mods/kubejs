@@ -15,7 +15,7 @@ this release contains the following fixes ported from 1.21:
 - fix: index issue in client asset pack injector (thanks to @purplesyringa for pointing this out in #1181)
 
 ## [8.0.5] - 2026-09-08
-- 
+
 - Fix invalid fluid lookup for fluid tag ingredients
 - Stop bundling Better Advanced Tooltips to fix CTD (use the one from CF / MR instead)
 - use TypeWrappers for HolderSets (#1169), this should fix some wrapping issues
