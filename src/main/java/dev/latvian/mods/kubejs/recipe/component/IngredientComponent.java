@@ -8,7 +8,6 @@ import dev.latvian.mods.kubejs.recipe.match.ItemMatch;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.kubejs.util.OpsContainer;
 import dev.latvian.mods.rhino.type.TypeInfo;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public record IngredientComponent(RecipeComponentType<?> type, Codec<Ingredient> codec, boolean allowEmpty) implements RecipeComponent<Ingredient> {
@@ -32,25 +31,7 @@ public record IngredientComponent(RecipeComponentType<?> type, Codec<Ingredient>
 
 	@Override
 	public boolean isEmpty(Ingredient value) {
-		if (value.isEmpty()) {
-			return true;
-		}
-
-		var stacks = value.getItems();
-
-		if (stacks.length == 0) {
-			return true;
-		}
-
-		int count = 0;
-
-		for (var stack : stacks) {
-			if (!stack.isEmpty() && stack.getItem() != Items.BARRIER) {
-				count++;
-			}
-		}
-
-		return count == 0;
+		return value.isEmpty() || value.hasNoItems();
 	}
 
 	@Override
