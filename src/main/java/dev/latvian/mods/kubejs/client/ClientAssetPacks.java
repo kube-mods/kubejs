@@ -56,9 +56,9 @@ public class ClientAssetPacks {
 		filePacks.add(new KubeFileResourcePack(PackType.CLIENT_RESOURCES));
 
 		int beforeModsIndex = KubeFileResourcePack.findBeforeModsIndex(packs);
-		int afterModsIndex = KubeFileResourcePack.findAfterModsIndex(packs);
-
 		packs.add(beforeModsIndex, virtualPacks.get(GeneratedDataStage.BEFORE_MODS));
+
+		int afterModsIndex = KubeFileResourcePack.findAfterModsIndex(packs);
 		packs.add(afterModsIndex, internalAssetPack);
 		packs.add(afterModsIndex + 1, virtualPacks.get(GeneratedDataStage.AFTER_MODS));
 		packs.addAll(afterModsIndex + 2, filePacks);
