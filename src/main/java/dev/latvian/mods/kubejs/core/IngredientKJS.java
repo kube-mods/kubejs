@@ -5,6 +5,7 @@ import com.mojang.serialization.DynamicOps;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.ingredient.WildcardIngredient;
 import dev.latvian.mods.kubejs.item.ItemPredicate;
+import dev.latvian.mods.kubejs.item.ItemStackSet;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IngredientWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.SizedIngredientWrapper;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
@@ -34,6 +35,11 @@ public interface IngredientKJS extends ItemPredicate, Replaceable, WithCodec, It
 	@Override
 	default ItemStack[] kjs$getStackArray() {
 		return kjs$self().getItems();
+	}
+
+	@Override
+	default ItemStackSet kjs$getDisplayStacks() {
+		return new ItemStackSet(kjs$self().getItems());
 	}
 
 	default Ingredient kjs$and(Ingredient ingredient) {
