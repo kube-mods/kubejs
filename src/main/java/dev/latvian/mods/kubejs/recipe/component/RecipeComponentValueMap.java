@@ -6,6 +6,8 @@ import dev.latvian.mods.rhino.Wrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +39,7 @@ public class RecipeComponentValueMap extends AbstractMap<RecipeKey<?>, Object> {
 	@Override
 	public Set<Map.Entry<RecipeKey<?>, Object>> entrySet() {
 		if (holderSet == null) {
-			holderSet = Cast.to(Set.of(holders));
+			holderSet = Cast.to(new LinkedHashSet<>(Arrays.asList(holders)));
 		}
 
 		return holderSet;
