@@ -21,7 +21,7 @@ public interface MinecraftEnvironmentKJS extends MessageSenderKJS {
 	}
 
 	default ScheduledEvents.ScheduledEvent kjs$scheduleRepeating(TemporalAmount timer, ScheduledEvents.Callback callback) {
-		return kjs$getScheduledEvents().schedule(timer, false, callback);
+		return kjs$getScheduledEvents().schedule(timer, true, callback);
 	}
 
 	default ScheduledEvents.ScheduledEvent kjs$scheduleRepeatingInTicks(TickDuration ticks, ScheduledEvents.Callback callback) {

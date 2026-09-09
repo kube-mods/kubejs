@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,15 @@ public class KubeJSEMIPlugin implements EmiPlugin {
 	public void register(EmiRegistry registry) {
 		var sessionData = KubeSessionData.of(Minecraft.getInstance());
 		var remote = sessionData == null ? null : sessionData.recipeViewerData;
+
+		if (RecipeViewerEvents.REMOVE_CATEGORIES.hasListeners()) {
+			var removedCategories = new HashSet<ResourceLocation>();
+			RecipeViewerEvents.REMOVE_CATEGORIES.post(ScriptType.CLIENT, new EMIRemoveCategoriesKubeEvent(removedCategories));
+
+			if (!removedCategories.isEmpty()) {
+				registry.removeRecipes(r -> r.getCategory() != null && removedCategories.contains(r.getCategory().getId()));
+			}
+		}
 
 		if (remote != null) {
 			var removedCategories = Set.copyOf(remote.removedCategories());

@@ -7,17 +7,18 @@ import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class ItemStackSet implements Iterable<ItemStack> {
-	private final HashMap<ItemResource, ItemStack> map;
+	private final LinkedHashMap<ItemResource, ItemStack> map;
 
 	public ItemStackSet(int initialSize) {
-		map = new HashMap<>(initialSize);
+		map = new LinkedHashMap<>(initialSize);
 	}
 
 	public ItemStackSet() {

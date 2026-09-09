@@ -149,6 +149,7 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 		return cached != null && cached.lookup().tagMap().containsKey(key.location());
 	}
 
+	// TODO: move to the ContextAwareReloadListener lookup somehow??
 	@Override
 	public RegistryAccess.Frozen registryAccess() {
 		return access;

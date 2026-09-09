@@ -19,6 +19,7 @@ import net.neoforged.neoforge.event.ServerChatEvent;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber(modid = KubeJS.MOD_ID)
@@ -73,9 +74,14 @@ public class KubeJSPlayerEventHandler {
 	}
 
 	@SubscribeEvent
-	public static void loggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		if (PlayerEvents.LOGGED_OUT.hasListeners() && event.getEntity() instanceof ServerPlayer player) {
-			PlayerEvents.LOGGED_OUT.post(ScriptType.SERVER, new SimplePlayerKubeEvent(player));
+	public static void loggedOut(PlayerLoggedOutEvent event) {
+		if (event.getEntity() instanceof ServerPlayer player) {
+			// restore player's inv before they're saved because they may have had a chest gui open
+			player.kjs$restoreCapturedInventory();
+
+			if (PlayerEvents.LOGGED_OUT.hasListeners()) {
+				PlayerEvents.LOGGED_OUT.post(ScriptType.SERVER, new SimplePlayerKubeEvent(player));
+			}
 		}
 	}
 

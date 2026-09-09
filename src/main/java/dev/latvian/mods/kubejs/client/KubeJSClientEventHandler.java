@@ -326,6 +326,7 @@ public class KubeJSClientEventHandler {
 
 	@SubscribeEvent
 	public static void loggingIn(ClientPlayerNetworkEvent.LoggingIn event) {
+		ScheduledClientEvent.EVENTS.clear();
 		ClientEvents.LOGGED_IN.post(ScriptType.CLIENT, new ClientPlayerKubeEvent(event.getPlayer()));
 	}
 

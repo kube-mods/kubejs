@@ -250,6 +250,23 @@ public interface ServerPlayerKJS extends PlayerKJS {
 		});
 	}
 
+	@HideFromJS
+	default boolean kjs$restoreCapturedInventory() {
+		var map = kjs$self().server.kjs$restoreInventories().remove(kjs$self().getUUID());
+
+		if (map == null) {
+			return false;
+		}
+
+		var playerItems = kjs$self().getInventory().getNonEquipmentItems();
+
+		for (int i = 0; i < playerItems.size(); i++) {
+			playerItems.set(i, map.getOrDefault(i, ItemStack.EMPTY));
+		}
+
+		return true;
+	}
+
 	default Container kjs$captureInventory(boolean autoRestore) {
 		var playerItems = kjs$self().getInventory().getNonEquipmentItems();
 
