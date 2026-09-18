@@ -75,10 +75,39 @@ KubeJS [plugins](https://github.com/KubeJS-Mods/KubeJS/blob/main/src/main/java/d
 - registering custom event handler groups for the KubeJS event system (`registerEvents`, this is **necessary** in order to have the event group be accessible from scripts)
 - attaching extra data to players, worlds or the server, such that it can be accessed by script developers later (`attach(Player|World|Server)Data` - [Example](https://github.com/FTBTeam/FTB-Quests/blob/11311be070273008483d4c734ff9b96cc6a85b02/common/src/main/java/dev/ftb/mods/ftbquests/integration/kubejs/KubeJSIntegration.java#L40-L43))
 
-You must add your plugin class in a `src/main/resources/kubejs.plugins.txt` file, optionally with mod id at end, e.g.:
+You must add your plugin class in a `src/main/resources/kube.plugin.json` file, optionally with mod id at end, e.g.:
 
-```
-dev.latvian.mods.kubejs.mekanism.MekanismKubeJSPlugin mekanism
+```json5
+{
+    "plugins": [
+        {
+            // Optional - highly recommended to provide the mod id
+            "id": "mod_id",
+            // Required - Class path to the plugin
+            "class": "path.to.my.awesome.integrator.for.MyKubeJSPlugin",
+            // Optional - Tells Kube to only load plugin on the client
+            "client_only": true,
+            // Optional - Only load the plugin if the following mods are present
+            "required_mods": ["some_mod"],
+            // Optional - Load this plugin after another plugin has loaded
+            "after": ["some_plugin"],
+            // Optional - Specify class filters
+            // "kubejs.classfilter.txt" will still load just fine
+            "class_filter": {
+                // Optional - 
+                "allow": [
+                    "some.util.MyUtilClass",
+                    "thing.api.SoupifierData",
+                    "some.package"
+                ],
+                "deny": [
+                    "some.saver.FileSystemWriter",
+                    "some.internals"
+                ]
+            }
+        }
+    ]
+}
 ```
 
 ### Adding bindings
