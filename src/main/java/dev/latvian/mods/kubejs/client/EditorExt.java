@@ -3,7 +3,6 @@ package dev.latvian.mods.kubejs.client;
 import dev.latvian.mods.kubejs.DevProperties;
 import net.minecraft.Util;
 
-import java.net.URI;
 import java.nio.file.Path;
 
 public class EditorExt {
@@ -20,12 +19,11 @@ public class EditorExt {
 		return !custom.isEmpty() && (custom.equals(VSCODE) || custom.equals(VSCODIUM) || custom.equals(VSCODE_OSS));
 	}
 
-	private static URI format(String scheme, Path path, int line, int column) {
-		return URI.create(scheme
-			.replace("{path}", path.toString())
+	private static String format(String scheme, Path path, int line, int column) {
+		return scheme
+			.replace("{path}", path.toAbsolutePath().toUri().getRawPath())
 			.replace("{line}", String.valueOf(line))
-			.replace("{col}", String.valueOf(column))
-		);
+			.replace("{col}", String.valueOf(column));
 	}
 
 	public static void openFile(Path path, int line, int column) {
