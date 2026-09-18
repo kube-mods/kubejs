@@ -40,6 +40,7 @@ public class CommonProperties extends BaseProperties {
 	public int defaultMaxStackSize;
 	public JsonElement creativeModeTabIcon;
 	public JsonElement creativeModeTabName;
+	public boolean useDoubleQuotes;
 
 	private CommonProperties() {
 		super(KubeJSPaths.COMMON_PROPERTIES, "KubeJS Common Properties");
@@ -59,6 +60,7 @@ public class CommonProperties extends BaseProperties {
 		startupErrorReportUrl = get("startup_error_report_url", "");
 		removeSlotLimit = get("remove_slot_limit", false);
 		defaultMaxStackSize = Math.max(0, Math.min(1_000_000_000, get("default_max_stack_size", 0)));
+		useDoubleQuotes = get("use_double_quotes", false);
 
 		creativeModeTabIcon = get("creative_mode_tab_icon", new JsonObject());
 		creativeModeTabName = get("creative_mode_tab_name", JsonNull.INSTANCE);
@@ -68,6 +70,12 @@ public class CommonProperties extends BaseProperties {
 	public void setPackMode(String s) {
 		packMode = s;
 		set("packmode", new JsonPrimitive(s));
+		save();
+	}
+	
+	public void setUseDoubleQuotes(boolean value) {
+		useDoubleQuotes = value;
+		set("use_double_quotes", new JsonPrimitive(value));
 		save();
 	}
 

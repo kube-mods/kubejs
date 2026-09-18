@@ -204,6 +204,15 @@ public class KubeJSCommands {
 					.executes(context -> packmode(context.getSource(), StringArgumentType.getString(context, "name")))
 				)
 			)
+			.then(Commands.literal("quote_style")
+				.executes(context -> toggleQuoteStyle(context.getSource()))
+				.then(Commands.literal("single")
+					.executes(context -> setQuoteStyle(context.getSource(), false))
+				)
+				.then(Commands.literal("double")
+					.executes(context -> setQuoteStyle(context.getSource(), true))
+				)
+			)
 			.then(Commands.literal("persistent-data")
 				.requires(spOrOP)
 				.then(PersistentDataCommands.addPersistentDataCommands(Commands.literal("server"), ctx -> Set.of(ctx.getSource().getServer())))
@@ -543,6 +552,23 @@ public class KubeJSCommands {
 			source.sendSuccess(() -> Component.literal("Set packmode to: " + packmode), true);
 		}
 
+		return 1;
+	}
+	
+	private static int toggleQuoteStyle(CommandSourceStack source) {
+		boolean current = CommonProperties.get().useDoubleQuotes;
+		CommonProperties.get().setUseDoubleQuotes(!current);
+		String newStyle = CommonProperties.get().useDoubleQuotes ? "double" : "single";
+		source.sendSuccess(() -> Component.literal("Quote style switched to: " + newStyle + " quotes"), true);
+		source.sendSuccess(() -> Component.literal("Please use /kubejs hand again to apply the new quote style to chat messages.").withStyle(ChatFormatting.YELLOW), false);
+		return 1;
+	}
+	
+	private static int setQuoteStyle(CommandSourceStack source, boolean useDoubleQuotes) {
+		CommonProperties.get().setUseDoubleQuotes(useDoubleQuotes);
+		String style = useDoubleQuotes ? "double" : "single";
+		source.sendSuccess(() -> Component.literal("Quote style set to: " + style + " quotes"), true);
+		source.sendSuccess(() -> Component.literal("Please use /kubejs hand again to apply the new quote style to chat messages.").withStyle(ChatFormatting.YELLOW), false);
 		return 1;
 	}
 
