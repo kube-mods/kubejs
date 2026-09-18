@@ -343,21 +343,21 @@ public class KubeJSPlugins {
 
 	/// A plugin queued for instantiation, after required-mod and client-only checks have already passed.
 	/// `id` is optional in case a mod does not provide it, but really should
-	private record PendingPlugin(
+	public record PendingPlugin(
 		String source,
 		Optional<String> id,
 		Class<? extends KubeJSPlugin> pluginClass,
 		List<String> after
 	) {}
 
-	private static final Codec<ClassFilterData> CLASS_FILTER_CODEC = RecordCodecBuilder.create(
+	public static final Codec<ClassFilterData> CLASS_FILTER_CODEC = RecordCodecBuilder.create(
 		inst -> inst.group(
 			Codec.STRING.listOf().optionalFieldOf("allow", List.of()).forGetter(ClassFilterData::allow),
 			Codec.STRING.listOf().optionalFieldOf("deny", List.of()).forGetter(ClassFilterData::deny)
 		).apply(inst, ClassFilterData::new)
 	);
 
-	private static final Codec<Optional<Class<? extends KubeJSPlugin>>> PLUGIN_CLASS_CODEC = Codec.STRING.comapFlatMap(str -> {
+	public static final Codec<Optional<Class<? extends KubeJSPlugin>>> PLUGIN_CLASS_CODEC = Codec.STRING.comapFlatMap(str -> {
 		try {
 			var clazz = Class.forName(str, false, KubeJSPlugins.class.getClassLoader());
 
@@ -371,7 +371,7 @@ public class KubeJSPlugins {
 		}
 	}, clazz -> clazz.map(Class::getName).orElse(""));
 
-	private static final Codec<PluginEntry> PLUGIN_ENTRY_CODEC = RecordCodecBuilder.create(
+	public static final Codec<PluginEntry> PLUGIN_ENTRY_CODEC = RecordCodecBuilder.create(
 		inst -> inst.group(
 			Codec.STRING.optionalFieldOf("id").forGetter(PluginEntry::id),
 			PLUGIN_CLASS_CODEC.fieldOf("class").forGetter(PluginEntry::pluginClass),
@@ -381,19 +381,19 @@ public class KubeJSPlugins {
 		).apply(inst, PluginEntry::new)
 	);
 
-	private static final Codec<PluginFileData> PLUGIN_DATA_CODEC = RecordCodecBuilder.create(
+	public static final Codec<PluginFileData> PLUGIN_DATA_CODEC = RecordCodecBuilder.create(
 		inst -> inst.group(
 			PLUGIN_ENTRY_CODEC.listOf().fieldOf("plugins").forGetter(PluginFileData::plugins),
 			CLASS_FILTER_CODEC.optionalFieldOf("class_filter").forGetter(PluginFileData::classFilter)
 		).apply(inst, PluginFileData::new)
 	);
 
-	private record PluginFileData (
+	public record PluginFileData (
 		List<PluginEntry> plugins,
 		Optional<ClassFilterData> classFilter
 	) {}
 
-	private record PluginEntry (
+	public record PluginEntry (
 		Optional<String> id,
 		// If a mod is required and not loaded, having it as an optional
 		// prevents the entire plugin list from failing, therefor an Optional of the class is used
@@ -403,7 +403,7 @@ public class KubeJSPlugins {
 		List<String> after
 	) {}
 
-	private record ClassFilterData (
+	public record ClassFilterData (
 		List<String> allow,
 		List<String> deny
 	) {}
