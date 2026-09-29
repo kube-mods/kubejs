@@ -16,7 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.GrassColor;
-import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.RedstoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jspecify.annotations.Nullable;
@@ -73,7 +73,7 @@ public interface BlockTintFunction {
 	BlockTintFunction REDSTONE = (state, level, pos, index) -> {
 		if (REDSTONE_COLORS[0] == null) {
 			for (int i = 0; i < REDSTONE_COLORS.length; i++) {
-				REDSTONE_COLORS[i] = new SimpleColor(RedStoneWireBlock.getColorForPower(i));
+				REDSTONE_COLORS[i] = new SimpleColor(RedstoneWireBlock.getColorForPower(i));
 			}
 		}
 
