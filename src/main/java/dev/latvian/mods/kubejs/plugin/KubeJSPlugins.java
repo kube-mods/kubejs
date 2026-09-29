@@ -401,7 +401,15 @@ public class KubeJSPlugins {
 		boolean clientOnly,
 		List<String> requiredMods,
 		List<String> after
-	) {}
+	) {
+		public static PluginEntry of(Optional<Class<? extends KubeJSPlugin>> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
+			return new PluginEntry(Optional.of(), pluginClass, clientOnly, requiredMods, after);
+		}
+
+		public static PluginEntry of(String id, Optional<Class<? extends KubeJSPlugin>> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
+			return new PluginEntry(id, pluginClass, clientOnly, requiredMods, after);
+		}
+	}
 
 	public record ClassFilterData (
 		List<String> allow,
