@@ -6,7 +6,7 @@ import dev.latvian.mods.kubejs.client.KubeJSKeybinds;
 import dev.latvian.mods.kubejs.item.ItemClickedKubeEvent;
 import dev.latvian.mods.kubejs.net.FirstClickPayload;
 import dev.latvian.mods.kubejs.plugin.builtin.event.ItemEvents;
-import dev.latvian.mods.kubejs.plugin.builtin.wrapper.GLFWInputWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.SDLInputWrapper;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.typings.Info;
@@ -99,7 +99,7 @@ public interface MinecraftClientKJS extends MinecraftEnvironmentKJS {
 	}
 
 	default boolean kjs$isKeyDown(String keyName) {
-		return kjs$isKeyDown(GLFWInputWrapper.get(keyName));
+		return kjs$isKeyDown(SDLInputWrapper.get(keyName));
 	}
 
 	default boolean kjs$isKeyBindDown(String id) {
