@@ -3,7 +3,6 @@ package dev.latvian.mods.kubejs.fluid;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import dev.latvian.mods.kubejs.component.DataComponentWrapper;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.script.SourceLine;
@@ -20,9 +19,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -49,6 +49,10 @@ public interface FluidWrapper {
 	DataResult<FluidIngredient> EMPTY_INGREDIENT_RESULT = error(() -> "Empty fluid ingredients aren't supported!");
 	DataResult<SizedFluidIngredient> EMPTY_SIZED_RESULT = Cast.to(EMPTY_INGREDIENT_RESULT);
 
+	private static DataResult<FluidIngredient> unknownTag(Identifier tag) {
+		return DataResult.error(() -> "Fluid tag " + tag + " does not exist!");
+	}
+
 	@HideFromJS
 	static DataResult<FluidStack> tryWrap(Context cx, @Nullable Object from) {
 		while (from instanceof Wrapper w) {
@@ -62,7 +66,7 @@ public interface FluidWrapper {
 			case Fluid fluid -> success(new FluidStack(fluid, FluidType.BUCKET_VOLUME));
 			case FluidIngredient i -> throw new KubeRuntimeException("Using FluidIngredient in places where FluidStack is expected is dangerous and unsupported!").source(SourceLine.of(cx));
 			case SizedFluidIngredient sized -> throw new KubeRuntimeException("Using SizedFluidIngredient in places where FluidStack is expected is dangerous and unsupported!").source(SourceLine.of(cx));
-			default -> parseString(cx, RegistryAccessContainer.of(cx).nbt(), from.toString());
+			default -> parseString(cx, from.toString());
 		};
 	}
 
@@ -103,7 +107,7 @@ public interface FluidWrapper {
 			case Fluid fluid -> success(FluidIngredient.of(fluid));
 			case FluidIngredient in -> success(in);
 			case SizedFluidIngredient s -> success(s.ingredient());
-			default -> ingredientOfString(cx, registries.nbt(), from.toString());
+			default -> ingredientOfString(cx, from.toString());
 		};
 	}
 
@@ -134,7 +138,7 @@ public interface FluidWrapper {
 			case Fluid fluid -> success(SizedFluidIngredient.of(fluid, FluidType.BUCKET_VOLUME));
 			case FluidIngredient in -> success(new SizedFluidIngredient(in, FluidType.BUCKET_VOLUME));
 			case SizedFluidIngredient s -> success(s);
-			default -> sizedIngredientOfString(cx, registries.nbt(), o.toString());
+			default -> sizedIngredientOfString(cx, o.toString());
 		};
 	}
 
@@ -212,28 +216,30 @@ public interface FluidWrapper {
 	}
 
 	interface ReadFn<T> {
-		DataResult<T> read(DynamicOps<Tag> registryOps, StringReader reader) throws CommandSyntaxException;
+		DataResult<T> read(Context cx, StringReader reader) throws CommandSyntaxException;
 	}
 
-	static <T> DataResult<T> readWithContext(Context cx, DynamicOps<Tag> registryOps, String s, ReadFn<T> fn, String name) {
+	static <T> DataResult<T> readWithContext(Context cx, String s, ReadFn<T> fn, String name) {
 		try {
 			var reader = new StringReader(s);
 			reader.skipWhitespace();
 
-			return fn.read(registryOps, reader);
+			return fn.read(cx, reader);
 		} catch (CommandSyntaxException ex) {
 			return error(() -> "Error parsing %s from string: %s".formatted(name, ex));
 		}
 	}
 
-	static DataResult<FluidStack> parseString(Context cx, DynamicOps<Tag> registryOps, String s) {
+	static DataResult<FluidStack> parseString(Context cx, String s) {
 		return switch (s) {
 			case "", "-", "empty", "minecraft:empty" -> success(FluidStack.EMPTY);
-			default -> readWithContext(cx, registryOps, s, FluidWrapper::read, "FluidStack");
+			default -> readWithContext(cx, s, FluidWrapper::read, "FluidStack");
 		};
 	}
 
-	static DataResult<FluidStack> read(DynamicOps<Tag> registryOps, StringReader reader) throws CommandSyntaxException {
+	static DataResult<FluidStack> read(Context cx, StringReader reader) throws CommandSyntaxException {
+		var registries = RegistryAccessContainer.of(cx);
+
 		if (!reader.canRead() || reader.peek() == '-') {
 			return success(FluidStack.EMPTY);
 		}
@@ -247,7 +253,7 @@ public interface FluidWrapper {
 		if (next == '[' || next == '{') {
 			return fluidStack.flatMap(stack -> {
 				try {
-					var components = DataComponentWrapper.readPatch(registryOps, reader);
+					var components = DataComponentWrapper.readPatch(registries.nbt(), reader);
 					stack.applyComponents(components);
 					return success(stack);
 				} catch (CommandSyntaxException e) {
@@ -259,15 +265,17 @@ public interface FluidWrapper {
 		return fluidStack;
 	}
 
-	static DataResult<FluidIngredient> ingredientOfString(Context cx, DynamicOps<Tag> registryOps, String s) {
+	static DataResult<FluidIngredient> ingredientOfString(Context cx, String s) {
 		return switch (s) {
 			case "", "-", "empty", "none", "minecraft:empty" -> EMPTY_INGREDIENT_RESULT;
-			default -> readWithContext(cx, registryOps, s, FluidWrapper::readIngredient, "FluidIngredient");
+			default -> readWithContext(cx, s, FluidWrapper::readIngredient, "FluidIngredient");
 		};
 	}
 
 	@HideFromJS
-	static DataResult<FluidIngredient> readIngredient(DynamicOps<Tag> registryOps, StringReader reader) {
+	static DataResult<FluidIngredient> readIngredient(Context cx, StringReader reader) {
+		var registries = RegistryAccessContainer.of(cx);
+
 		if (!reader.canRead() || reader.peek() == '-') {
 			return EMPTY_INGREDIENT_RESULT;
 		}
@@ -275,11 +283,11 @@ public interface FluidWrapper {
 		return switch (reader.peek()) {
 			case '#' -> {
 				reader.skip();
-				var tagKey = ID.read(reader).map(FluidTags::create);
-				yield tagKey.map(k -> {
-					var lookup = BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.FLUID);
-					return FluidIngredient.of(lookup.getOrThrow(k));
-				});
+				yield ID.read(reader).map(FluidTags::create).flatMap(tagKey ->
+					registries.get(tagKey)
+						.map(set -> DataResult.success(FluidIngredient.of(set)))
+						.orElseGet(() -> unknownTag(tagKey.location()))
+				);
 			}
 			case '@' -> {
 				reader.skip();
@@ -294,32 +302,32 @@ public interface FluidWrapper {
 
 				if (next == '[' || next == '{') {
 					try {
-						var components = DataComponentWrapper.readPredicate(registryOps, reader);
+						var components = DataComponentWrapper.readPredicate(registries.nbt(), reader);
 						yield fluid.map(holder -> DataComponentFluidIngredient.of(false, components, HolderSet.direct(holder)));
 					} catch (CommandSyntaxException e) {
 						yield error(e::getMessage);
 					}
 				}
 
-				yield fluid.map(holder -> FluidIngredient.of(HolderSet.direct(holder.value().builtInRegistryHolder())));
+				yield fluid.map(holder -> FluidIngredient.of(holder.value()));
 			}
 		};
 	}
 
-	static DataResult<SizedFluidIngredient> sizedIngredientOfString(Context cx, DynamicOps<Tag> registryOps, String s) {
+	static DataResult<SizedFluidIngredient> sizedIngredientOfString(Context cx, String s) {
 		return switch (s) {
 			case "", "-", "empty", "none", "minecraft:empty" -> EMPTY_SIZED_RESULT;
-			default -> readWithContext(cx, registryOps, s, FluidWrapper::readSizedIngredient, "SizedFluidIngredient");
+			default -> readWithContext(cx, s, FluidWrapper::readSizedIngredient, "SizedFluidIngredient");
 		};
 	}
 
-	static DataResult<SizedFluidIngredient> readSizedIngredient(DynamicOps<Tag> registryOps, StringReader reader) throws CommandSyntaxException {
+	static DataResult<SizedFluidIngredient> readSizedIngredient(Context cx, StringReader reader) throws CommandSyntaxException {
 		if (!reader.canRead()) {
 			return EMPTY_SIZED_RESULT;
 		}
 
 		var amount = readFluidAmount(reader);
-		var ingredient = readIngredient(registryOps, reader);
+		var ingredient = readIngredient(cx, reader);
 
 		return ingredient.apply2(SizedFluidIngredient::new, amount);
 	}

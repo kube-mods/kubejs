@@ -107,7 +107,7 @@ public class KubeJSContext extends Context {
 	public int internalConversionWeightLast(Object fromObj, TypeInfo target) {
 		var c = target.asClass();
 
-		if (c == Optional.class || c == ResourceKey.class || c == Holder.class || c == HolderSet.class || c == TagKey.class || c == Holder.Reference.class) {
+		if (c == Optional.class || c == ResourceKey.class || c == Holder.class || c == TagKey.class || c == Holder.Reference.class) {
 			return CONVERSION_TRIVIAL;
 		} else if (c != Object.class) {
 			var reg = RegistryType.allOfClass(target.asClass());

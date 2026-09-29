@@ -13,6 +13,8 @@ import dev.latvian.mods.rhino.type.TypeInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 
 public record ResourceKeyComponent<T>(@Nullable ResourceKey<RecipeComponentType<?>> typeOverride, ResourceKey<? extends Registry<T>> registryKey, Codec<ResourceKey<T>> codec, TypeInfo typeInfo) implements RecipeComponent<ResourceKey<T>> {
@@ -21,8 +23,8 @@ public record ResourceKeyComponent<T>(@Nullable ResourceKey<RecipeComponentType<
 		return new ResourceKeyComponent<>(typeOverride, registryKey, ResourceKey.codec(registryKey), reg == null ? TypeInfo.of(ResourceKey.class) : TypeInfo.of(ResourceKey.class).withParams(reg.type()));
 	}
 
-	public static final ResourceKeyComponent<?> DIMENSION = create(RecipeComponentType.builtin("dimension_resource_key"), Registries.DIMENSION);
-	public static final ResourceKeyComponent<?> LOOT_TABLE = create(RecipeComponentType.builtin("loot_table_resource_key"), Registries.LOOT_TABLE);
+	public static final ResourceKeyComponent<Level> DIMENSION = create(RecipeComponentType.builtin("dimension_resource_key"), Registries.DIMENSION);
+	public static final ResourceKeyComponent<LootTable> LOOT_TABLE = create(RecipeComponentType.builtin("loot_table_resource_key"), Registries.LOOT_TABLE);
 
 	private static <T> ResourceKeyComponent<T> of(ResourceKey<?> key) {
 		if (key == Registries.DIMENSION) {

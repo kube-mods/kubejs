@@ -165,6 +165,7 @@ public class KubeJSServerEventHandler {
 	@SubscribeEvent
 	public static void serverStopped(ServerStoppedEvent event) {
 		RegistryAccessContainer.current = RegistryAccessContainer.BUILTIN;
+		ScheduledServerEvent.EVENTS.clear();
 	}
 
 	@SubscribeEvent

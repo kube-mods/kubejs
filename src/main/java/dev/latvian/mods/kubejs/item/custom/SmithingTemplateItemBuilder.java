@@ -28,8 +28,8 @@ public class SmithingTemplateItemBuilder extends ItemBuilder {
 	private static final List<Identifier> CRYSTAL_ICONS = List.of(EMPTY_SLOT_REDSTONE_DUST, EMPTY_SLOT_QUARTZ, EMPTY_SLOT_EMERALD, EMPTY_SLOT_DIAMOND, EMPTY_SLOT_LAPIS_LAZULI, EMPTY_SLOT_AMETHYST_SHARD);
 
 	private final Map<String, String> translations = new HashMap<>();
-	public Component appliesToText = Component.literal("set with .appliesToDescription(string) on your smithing_template type item").withStyle(ChatFormatting.BLUE);
-	public Component ingredientsText = Component.literal("set with .ingredientsDescription(string) on your smithing_template type item").withStyle(ChatFormatting.BLUE);
+	public Component appliesToText = Component.literal("set with .appliesTo(string) on your smithing_template type item").withStyle(ChatFormatting.BLUE);
+	public Component ingredientsText = Component.literal("set with .ingredients(string) on your smithing_template type item").withStyle(ChatFormatting.BLUE);
 	public Component appliesToSlotDescriptionText = Component.literal("set with .appliesToSlotDescription(string) on your smithing_template type item");
 	public Component ingredientSlotDescriptionText = Component.literal("set with .ingredientsSlotDescription(string) on your smithing_template type item");
 	public final List<Identifier> appliesToEmptyIcons = new ArrayList<>();

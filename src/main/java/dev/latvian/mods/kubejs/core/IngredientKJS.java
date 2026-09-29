@@ -6,6 +6,7 @@ import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.holder.KubeJSHolderSet;
 import dev.latvian.mods.kubejs.ingredient.CreativeTabIngredient;
 import dev.latvian.mods.kubejs.item.ItemPredicate;
+import dev.latvian.mods.kubejs.item.ItemStackSet;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IngredientWrapper;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
@@ -25,6 +26,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
@@ -50,6 +52,17 @@ public interface IngredientKJS extends ItemPredicate, Replaceable, WithCodec, It
 		return kjs$self().items()
 			.map(ItemStack::new)
 			.toArray(ItemStack[]::new);
+	}
+
+	@Override
+	default ItemStackSet kjs$getDisplayStacks() {
+		var set = new ItemStackSet();
+
+		kjs$self().display()
+			.resolve(ContextMap.EMPTY, SlotDisplay.ItemStackContentsFactory.INSTANCE)
+			.forEachOrdered(set::add);
+
+		return set;
 	}
 
 	default Ingredient kjs$and(Ingredient ingredient) {

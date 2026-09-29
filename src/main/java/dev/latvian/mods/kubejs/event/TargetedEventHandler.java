@@ -51,7 +51,8 @@ public class TargetedEventHandler<E> extends EventHandler {
 	}
 
 	public boolean hasListeners(@Nullable E extraId) {
-		return eventContainers != null || extraId != null && extraEventContainers != null && extraEventContainers.containsKey(extraId);
+		var extra = extraEventContainers;
+		return eventContainers != null || extraId != null && extra != null && extra.containsKey(extraId);
 	}
 
 	/// @see TargetedEventHandler#post(ScriptTypeHolder, E, KubeEvent)

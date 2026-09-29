@@ -32,7 +32,7 @@ public class ScheduledEvents {
 		public transient Callback callback;
 
 		public ScheduledEvent reschedule() {
-			this.endTime = (ofTicks ? scheduledEvents.currentTick : scheduledEvents.currentMillis) + timer;
+			this.endTime = (ofTicks ? scheduledEvents.currentTick : System.currentTimeMillis()) + timer;
 			return this;
 		}
 
@@ -108,14 +108,22 @@ public class ScheduledEvents {
 	public final AtomicInteger nextId;
 	public long currentMillis;
 	public long currentTick;
+	private boolean ticksReset;
 
 	public ScheduledEvents(Supplier<ScheduledEvent> factory) {
 		this.factory = factory;
 		this.events = new LinkedList<>();
 		this.futureEvents = new LinkedList<>();
 		this.nextId = new AtomicInteger(0);
-		this.currentMillis = 0L;
+		this.currentMillis = System.currentTimeMillis();
 		this.currentTick = 0L;
+		this.ticksReset = true;
+	}
+
+	public void clear() {
+		events.clear();
+		futureEvents.clear();
+		ticksReset = true;
 	}
 
 	public ScheduledEvent schedule(TemporalAmount timer, boolean repeating, ScheduledEvents.Callback callback) {
@@ -136,7 +144,11 @@ public class ScheduledEvents {
 		e.repeating = repeating;
 		e.timer = timer;
 		e.callback = callback;
-		e.reschedule();
+
+		if (!ofTicks || !ticksReset) {
+			e.reschedule();
+		}
+
 		futureEvents.add(e);
 		return e;
 	}
@@ -146,9 +158,19 @@ public class ScheduledEvents {
 		currentTick = nowTicks;
 
 		if (!futureEvents.isEmpty()) {
+			if (ticksReset) {
+				for (var e : futureEvents) {
+					if (e.ofTicks) {
+						e.reschedule();
+					}
+				}
+			}
+
 			events.addAll(futureEvents);
 			futureEvents.clear();
 		}
+
+		ticksReset = false;
 
 		if (!events.isEmpty()) {
 			events.removeIf(ScheduledEvent.TICK);

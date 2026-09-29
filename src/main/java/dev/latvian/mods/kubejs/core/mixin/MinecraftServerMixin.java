@@ -100,16 +100,8 @@ public abstract class MinecraftServerMixin implements MinecraftServerKJS {
 
 		if (!kjs$restoreInventories.isEmpty()) {
 			for (var player : kjs$self().getPlayerList().getPlayers()) {
-				var map = kjs$restoreInventories.get(player.getUUID());
-
-				if (map != null && player.isAlive() && !player.hasDisconnected() && !(player.containerMenu instanceof CustomChestMenu)) {
-					kjs$restoreInventories.remove(player.getUUID());
-
-					var playerItems = player.getInventory().getNonEquipmentItems();
-
-					for (int i = 0; i < playerItems.size(); i++) {
-						playerItems.set(i, map.getOrDefault(i, ItemStack.EMPTY));
-					}
+				if (kjs$restoreInventories.containsKey(player.getUUID()) && player.isAlive() && !player.hasDisconnected() && !(player.containerMenu instanceof CustomChestMenu)) {
+					player.kjs$restoreCapturedInventory();
 				}
 			}
 		}

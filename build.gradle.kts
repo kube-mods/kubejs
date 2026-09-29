@@ -97,6 +97,12 @@ repositories {
 
 dependencies {
 	api("dev.latvian.mods:rhino:$rhinoVersion") { isTransitive = false }
+	implementation("dev.latvian.mods:better-advanced-tooltips") {
+		version {
+			strictly("[$batVersion,)")
+			prefer(batVersion)
+		}
+	}
 
 	// not updated to 26.1 yet
 	/*compileOnly("dev.architectury:architectury-neoforge:$archVersion")*/
@@ -111,12 +117,6 @@ dependencies {
 		version {
 			strictly("[animated-gif-lib-$gifLibVersion,)")
 			prefer("animated-gif-lib-$gifLibVersion")
-		}
-	})
-	jarJar(implementation("dev.latvian.mods:better-advanced-tooltips") {
-		version {
-			strictly("[$batVersion,)")
-			prefer(batVersion)
 		}
 	})
 }
