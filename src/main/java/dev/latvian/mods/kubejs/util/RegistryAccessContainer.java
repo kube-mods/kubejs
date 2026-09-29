@@ -12,6 +12,7 @@ import dev.latvian.mods.kubejs.script.KubeJSContext;
 import dev.latvian.mods.kubejs.server.DataExport;
 import dev.latvian.mods.rhino.Context;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,7 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class RegistryAccessContainer extends RegistryOpsContainer implements RegistryAccess, ICondition.IContext {
+public final class RegistryAccessContainer extends RegistryOpsContainer implements HolderLookup.Provider, ICondition.IContext {
 	public static final RegistryAccessContainer BUILTIN = new RegistryAccessContainer(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
 
 	// Still necessary because STARTUP and CLIENT scripts need to know about registries
@@ -55,7 +56,7 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 	public @Nullable CachedItemTagLookup cachedItemTags;
 	public @Nullable CachedTagLookup<Block> cachedBlockTags;
 	public @Nullable CachedTagLookup<Fluid> cachedFluidTags;
-	private final Map<Identifier, RegistryWrapper> cachedRegistryWrappers = new HashMap<>();
+	private final Map<Identifier, RegistryWrapper<?>> cachedRegistryWrappers = new HashMap<>();
 
 	public RegistryAccessContainer(RegistryAccess.Frozen access) {
 		super(
@@ -70,12 +71,16 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 		this.cachedRegistryTags = new Reference2ObjectOpenHashMap<>();
 	}
 
+	public <T> Registry<T> registry(ResourceKey<? extends Registry<? extends T>> registryKey) {
+		return access.lookupOrThrow(registryKey);
+	}
+
 	public Registry<Item> item() {
-		return lookupOrThrow(Registries.ITEM);
+		return registry(Registries.ITEM);
 	}
 
 	public Registry<Block> block() {
-		return lookupOrThrow(Registries.BLOCK);
+		return registry(Registries.BLOCK);
 	}
 
 	public DamageSources damageSources() {
@@ -149,9 +154,13 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 		return cached != null && cached.lookup().tagMap().containsKey(key.location());
 	}
 
-	@Override
 	public RegistryAccess.Frozen registryAccess() {
 		return access;
+	}
+
+	@Override
+	public Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
+		return access.listRegistryKeys();
 	}
 
 	@Override
@@ -160,7 +169,7 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 	}
 
 	@Override
-	public Stream<RegistryEntry<?>> registries() {
-		return access.registries();
+	public HolderLookup.Provider registries() {
+		return access;
 	}
 }
