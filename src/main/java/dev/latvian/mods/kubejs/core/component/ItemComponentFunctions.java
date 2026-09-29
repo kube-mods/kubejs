@@ -24,7 +24,6 @@ import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.item.component.InstrumentComponent;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.component.MapItemColor;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TypedEntityData;
@@ -108,8 +107,9 @@ public interface ItemComponentFunctions extends DataComponentAccessor, Attribute
 		kjs$override(DataComponents.TOOL, tool);
 	}
 
+	@Deprecated
 	default void kjs$setMapItemColor(KubeColor color) {
-		kjs$override(DataComponents.MAP_COLOR, new MapItemColor(color.kjs$getRGB()));
+		KubeJS.LOGGER.warn("kjs$setMapItemColor is deprecated, map color is no longer a data component and this does nothing");
 	}
 
 	default void kjs$setChargedProjectiles(List<ItemStack> items) {
@@ -117,7 +117,7 @@ public interface ItemComponentFunctions extends DataComponentAccessor, Attribute
 	}
 
 	default void kjs$setBundleContents(List<ItemStack> items) {
-		var mutable = new BundleContents.Mutable(BundleContents.EMPTY);
+		var mutable = new BundleContents.Mutable();
 		items.forEach(mutable::tryInsert);
 		kjs$override(DataComponents.BUNDLE_CONTENTS, mutable.toImmutable());
 	}
