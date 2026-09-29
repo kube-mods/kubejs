@@ -31,7 +31,6 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
-import net.neoforged.neoforge.event.ModifyRecipeJsonsEvent;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
@@ -48,16 +47,6 @@ public class KubeJSModEventHandler {
 	@SubscribeEvent
 	public static void modifyDefaultComponents(ModifyDefaultComponentsEvent event) {
 		UtilsJS.postItemModificationEvents(event);
-	}
-
-	@SubscribeEvent
-	public static void modifyRecipeJsons(ModifyRecipeJsonsEvent event) {
-		if (!RecipesKubeEvent.INSTANCE.isBound()) {
-			KubeJS.LOGGER.warn("Recipe event is not bound, is another mod calling ModifyRecipeJsonsEvent?!");
-			return;
-		}
-
-		RecipesKubeEvent.INSTANCE.get().post(event.getOps(), event.getRecipeJsons());
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
