@@ -52,7 +52,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -198,7 +198,7 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		var pool = new LootPool.Builder();
 
 		if (blockDrops.rolls() != null) {
-			pool.setRolls(blockDrops.rolls());
+			pool.setRolls(Holder.direct(blockDrops.rolls()));
 		}
 
 		pool.when(ExplosionCondition.survivesExplosion());
@@ -211,11 +211,11 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 			var item = LootItem.lootTableItem(drop.getItem());
 
 			if (drop.getCount() > 1) {
-				item.apply(SetItemCountFunction.setCount(ConstantValue.exactly(drop.getCount())));
+				item.apply(SetItemCountFunction.setCount(Holder.direct(new ConstantValue(drop.getCount()))));
 			}
 
 			if (!drop.isComponentsPatchEmpty()) {
-				item.apply(LootItemConditionalFunction.simpleBuilder(c -> new SetComponentsFunction(c, drop.getComponentsPatch())));
+				item.apply(LootItemConditionalFunction.simpleBuilder(c -> Holder.direct(new SetComponentsFunction(c, drop.getComponentsPatch())).value()));
 			}
 
 			pool.add(item);
@@ -813,7 +813,7 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		}
 
 		if (!viewBlocking) {
-			properties.isViewBlocking(ALWAYS_FALSE_STATE_PREDICATE);
+			properties.isViewBlocking(ALWAYS_FALSE_STATE_ARG_PREDICATE);
 		}
 
 		if (!redstoneConductor) {

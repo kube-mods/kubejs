@@ -9,6 +9,7 @@ import dev.latvian.mods.kubejs.util.Cast;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Position;
 import net.minecraft.util.valueproviders.ClampedInt;
 import net.minecraft.util.valueproviders.ClampedNormalFloat;
@@ -22,9 +23,9 @@ import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.floats.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.ints.BinomialDistributionGenerator;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -130,7 +131,7 @@ public interface MiscWrappers {
 		return switch (o) {
 			case Number n -> {
 				var f = n.floatValue();
-				yield success(UniformGenerator.between(f, f));
+				yield success(new UniformGenerator(Holder.direct(new ConstantValue(f)), Holder.direct(new ConstantValue(f))));
 			}
 			case List<?> list -> switch (list.size()) {
 				case 0 -> error(() -> "list cannot be empty");

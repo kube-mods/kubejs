@@ -5,7 +5,7 @@ import dev.latvian.mods.kubejs.component.CustomModelDataType;
 import dev.latvian.mods.kubejs.util.Cast;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
-import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
@@ -13,6 +13,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.LockCode;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Rarity;
@@ -136,7 +137,7 @@ public interface DataComponentAccessor extends DataComponentGetter, DataComponen
 			throw new IllegalArgumentException("ENTITY_DATA tag must contain non-empty \"id\"");
 		}
 
-		var type = EntityType.byString(id.get()).orElseThrow(() -> new IllegalArgumentException("Unknown entity id: " + id));
+		var type = EntityType.by(id.get()).orElseThrow(() -> new IllegalArgumentException("Unknown entity id: " + id));
 		kjs$override(DataComponents.ENTITY_DATA, TypedEntityData.of(type, tag));
 	}
 
@@ -166,7 +167,7 @@ public interface DataComponentAccessor extends DataComponentGetter, DataComponen
 	}
 
 	default void kjs$setLockCode(ItemPredicate lock) {
-		kjs$override(DataComponents.LOCK, new net.minecraft.world.LockCode(lock));
+		kjs$override(DataComponents.LOCK, new LockCode(lock));
 	}
 
 	default void kjs$setContainerLootTable(ResourceKey<LootTable> lootTable) {
