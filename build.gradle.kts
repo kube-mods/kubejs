@@ -1,7 +1,7 @@
 import com.almostreliable.almostgradle.dependency.LoadingMode
 
 plugins {
-	id("net.neoforged.moddev") version "2.0.138"
+	id("net.neoforged.moddev") version "2.0.147"
 	id("com.almostreliable.almostgradle") version "2.1.1"
 	id("idea")
 	// id("me.shedaniel.unified-publishing") version "0.1.+"
@@ -34,17 +34,17 @@ almostgradle.setup {
 			minecraftVersion = "1.21.1"
 		}*/
 
-		rei {
-			runConfig = true
-			mode = LoadingMode.API
-			version = "21.11.814"
-			minecraftVersion = "1.21.1"
-		}
+//		rei {
+//			runConfig = true
+//			mode = LoadingMode.API
+//			version = "21.11.814"
+//			minecraftVersion = "1.21.1"
+//		}
 
 		jei {
 			runConfig = true
 			mode = LoadingMode.API
-			version = "29.6.2.31"
+			version = "31.7.0.47"
 		}
 	}
 }
@@ -64,6 +64,7 @@ neoForge {
 }
 
 repositories {
+	mavenLocal()
 	maven {
 		setUrl("https://maven.shedaniel.me/")
 		content {
