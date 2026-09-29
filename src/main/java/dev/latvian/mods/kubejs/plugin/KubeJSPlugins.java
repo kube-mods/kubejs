@@ -30,8 +30,37 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-/// Discovers, loads, and stores all [KubeJSPlugin] instances.
-/// Use [#forEachPlugin] to iterate over all loaded plugins.
+/// A KubeJS plugin. Plugins are discovered and loaded by [KubeJSPlugins].
+///
+/// Register plugins in a `kube.plugin.json` in the resources dir of your mod
+///
+/// ```json
+/// {
+///   "plugins": [
+///     {
+///       "id": "mymod",
+///       "class": "com.example.mymod.MyPlugin",
+///       "client_only": false,
+///       "required_mods": ["othermod"],
+///       "after": ["architectury"]
+///     }
+///   ],
+///   "class_filter": {
+///     "allow": ["com.example.mymod.api"],
+///     "deny": ["com.example.mymod.internal"]
+///   }
+/// }
+/// ```
+///
+/// Only `class` is required. Entries that have a missing class are skipped. `after` refers to the `id`
+/// of other plugins, and cycles fall back to declaration order.
+///
+/// The file is parsed by [KubeJSPlugins#PLUGIN_DATA_CODEC], which is built from
+/// [KubeJSPlugins#PLUGIN_ENTRY_CODEC] and [KubeJSPlugins#CLASS_FILTER_CODEC].
+///
+/// The legacy `kubejs.plugins.txt` format is deprecated.
+///
+/// @see KubeJSPlugins
 public class KubeJSPlugins {
 	private static final Gson GSON = new GsonBuilder().create();
 
