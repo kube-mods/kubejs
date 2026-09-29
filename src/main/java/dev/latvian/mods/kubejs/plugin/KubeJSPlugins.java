@@ -403,7 +403,7 @@ public class KubeJSPlugins {
 		List<String> after
 	) {
 		public static PluginEntry of(Optional<Class<? extends KubeJSPlugin>> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
-			return new PluginEntry(Optional.of(), pluginClass, clientOnly, requiredMods, after);
+			return new PluginEntry(Optional.empty(), pluginClass, clientOnly, requiredMods, after);
 		}
 
 		public static PluginEntry of(String id, Optional<Class<? extends KubeJSPlugin>> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
