@@ -12,6 +12,7 @@ import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
+import net.minecraft.advancements.predicates.BlockPredicate;
 import net.minecraft.advancements.predicates.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
@@ -233,8 +235,9 @@ public class CropBlockBuilder extends BlockBuilder {
 		// TODO: Use this lookup to apply fortune bonus
 		var registries = generator.getRegistries();
 
-		var mature = MatchBlock.blockMatches(this.get())
-			.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CropBlock.AGE, age));
+		var mature = Holder.direct(new MatchBlock(BlockPredicate.Builder.block()
+			.of(registries.block(), this.get())
+			.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CropBlock.AGE, age)).build()));
 
 		var builder = LootTable.lootTable();
 		for (var output : outputs) {
@@ -243,13 +246,13 @@ public class CropBlockBuilder extends BlockBuilder {
 			}
 			var cropItem = LootItem.lootTableItem(output.getFirst().value())
 				.apply(SetItemCountFunction.setCount(output.getSecond()))
-				.when(mature);
+				.when((LootItemCondition.Builder) mature);
 			builder.withPool(LootPool.lootPool().add(cropItem));
 		}
 
 		if (itemBuilder != null && !noSeeds) {
 			var pool = LootPool.lootPool().add(LootItem.lootTableItem(itemBuilder.get())
-				.when(mature)
+				.when((LootItemCondition.Builder) mature)
 				.otherwise(LootItem.lootTableItem(itemBuilder.get()))
 			);
 
