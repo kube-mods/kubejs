@@ -1,7 +1,7 @@
 package dev.latvian.mods.kubejs.client;
 
 import dev.latvian.mods.kubejs.DevProperties;
-import net.minecraft.util.Util;
+import dev.latvian.mods.kubejs.util.PlatformUtil;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -31,9 +31,9 @@ public class EditorExt {
 	public static void openFile(Path path, int line, int column) {
 		var custom = DevProperties.get().openUriFormat;
 		if (!custom.isBlank()) {
-			Util.getPlatform().openUri(format(custom, path, line, column));
+			PlatformUtil.openUri(format(custom, path, line, column));
 		} else {
-			Util.getPlatform().openPath(path);
+			PlatformUtil.openPath(path);
 		}
 	}
 }
