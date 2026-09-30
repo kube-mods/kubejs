@@ -693,11 +693,15 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		return this;
 	}
 
-	@Info("""
-		Bounces entities that land on this block by bounciness * their fall velocity.
-		Do not make bounciness negative, as that is a recipe for a long and laggy trip to the void
-		""")
-	public BlockBuilder bounciness(Consumer<BounceRestitutionCallback> callbackJS) {
+	@Info("Bounces entities that land on this by restitution * their fall velocity. Negative is clamped to 0")
+	public BlockBuilder restitution(float restitution) {
+		float clamped = Math.max(0F, restitution);
+		bounceRestitutionCallback = ctx -> ctx.restitution(clamped);
+		return this;
+	}
+
+	@Info("Set the restitution when an entity lands on this. Takes precedence over restitution(float)")
+	public BlockBuilder restitution(Consumer<BounceRestitutionCallback> callbackJS) {
 		bounceRestitutionCallback = callbackJS;
 		return this;
 	}
