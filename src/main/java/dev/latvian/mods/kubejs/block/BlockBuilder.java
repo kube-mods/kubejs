@@ -71,6 +71,7 @@ import java.util.function.Predicate;
 public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 	private static final BlockBehaviour.StatePredicate ALWAYS_FALSE_STATE_PREDICATE = (blockState, blockGetter, blockPos) -> false;
 	private static final BlockBehaviour.StateArgumentPredicate<?> ALWAYS_FALSE_STATE_ARG_PREDICATE = (blockState, blockGetter, blockPos, type) -> false;
+	private static final BlockBehaviour.StateArgumentPredicate<AABB> ALWAYS_FALSE_AABB_PREDICATE = ((blockState, blockGetter, blockPos, aabb) -> false);
 
 	public transient @Nullable Block copyPropertiesFrom;
 	public transient @Nullable SoundType soundType;
@@ -813,7 +814,7 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		}
 
 		if (!viewBlocking) {
-			properties.isViewBlocking(ALWAYS_FALSE_STATE_ARG_PREDICATE);
+			properties.isViewBlocking(ALWAYS_FALSE_AABB_PREDICATE);
 		}
 
 		if (!redstoneConductor) {
