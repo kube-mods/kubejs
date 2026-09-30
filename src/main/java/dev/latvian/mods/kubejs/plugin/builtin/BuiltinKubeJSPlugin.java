@@ -184,7 +184,6 @@ import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentMap;
@@ -827,20 +826,5 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 		registry.register(TextureKubeIcon.TYPE);
 		registry.register(AtlasSpriteKubeIcon.TYPE);
 		registry.register(ItemKubeIcon.TYPE);
-	}
-
-	@Override
-	public void generateData(KubeDataGenerator generator) {
-		generator.dataMap(NeoForgeDataMaps.FURNACE_FUELS, callback -> {
-			for (var entry : ItemModificationKubeEvent.ItemModifications.BURN_TIME_OVERRIDES.reference2IntEntrySet()) {
-				callback.accept(entry.getKey().kjs$getIdLocation(), new FurnaceFuel(entry.getIntValue()));
-			}
-
-			for (var builder : RegistryObjectStorage.ITEM) {
-				if (builder instanceof ItemBuilder item && item.burnTime > 0) {
-					callback.accept(item.id, new FurnaceFuel(item.burnTime));
-				}
-			}
-		});
 	}
 }
