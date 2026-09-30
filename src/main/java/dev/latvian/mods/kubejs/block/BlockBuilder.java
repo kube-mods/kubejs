@@ -1,6 +1,6 @@
 package dev.latvian.mods.kubejs.block;
 
-import dev.latvian.mods.kubejs.block.callback.AfterEntityFallenOnBlockCallback;
+import dev.latvian.mods.kubejs.block.callback.BounceRestitutionCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockExplodedCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateMirrorCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateModifyCallback;
@@ -106,7 +106,7 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 	public transient @Nullable Consumer<EntityBlockCallback> insideCallback;
 	public transient @Nullable Consumer<EntityBlockCallback> stepOnCallback;
 	public transient @Nullable Consumer<EntityFallenOnBlockCallback> fallOnCallback;
-	public transient @Nullable Consumer<AfterEntityFallenOnBlockCallback> afterFallenOnCallback;
+	public transient @Nullable Consumer<BounceRestitutionCallback> bounceRestitutionCallback;
 	public transient @Nullable Consumer<BlockExplodedCallback> explodedCallback;
 	public transient @Nullable Consumer<BlockStateRotateCallback> rotateStateModification;
 	public transient @Nullable Consumer<BlockStateMirrorCallback> mirrorStateModification;
@@ -697,16 +697,8 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		Bounces entities that land on this block by bounciness * their fall velocity.
 		Do not make bounciness negative, as that is a recipe for a long and laggy trip to the void
 		""")
-	public BlockBuilder bounciness(float bounciness) {
-		return afterFallenOn(ctx -> ctx.bounce(bounciness));
-	}
-
-	@Info("""
-		Set how this block bounces/moves entities that land on top of this. Do not use this to modify the block, use fallOn instead!
-		Use ctx.bounce(height) or ctx.setVelocity(x, y, z) to change the entities velocity.
-		""")
-	public BlockBuilder afterFallenOn(Consumer<AfterEntityFallenOnBlockCallback> callbackJS) {
-		afterFallenOnCallback = callbackJS;
+	public BlockBuilder bounciness(Consumer<BounceRestitutionCallback> callbackJS) {
+		bounceRestitutionCallback = callbackJS;
 		return this;
 	}
 
