@@ -14,12 +14,12 @@ public interface CreativeTabIconSupplier {
 		public ItemStack get() {
 			try {
 				var i = supplier.getIcon();
-				return i.isEmpty() ? Items.PURPLE_DYE.getDefaultInstance() : i;
+				return i.isEmpty() ? Items.DYE.purple().getDefaultInstance() : i;
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 
-			return Items.PURPLE_DYE.getDefaultInstance();
+			return Items.DYE.purple().getDefaultInstance();
 		}
 	}
 
