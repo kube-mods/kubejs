@@ -26,7 +26,7 @@ public class BounceRestitutionCallback extends EntityBlockCallback {
        Sets the restitution. Negative values are clamped to 0.
        Values above 1 make the entity rebound faster than it landed.
        """)
-	public void setRestitution(float restitution) {
+	public void restitution(float restitution) {
 		this.restitution = Math.max(0F, restitution);
 	}
 }
