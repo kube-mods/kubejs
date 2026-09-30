@@ -1,6 +1,5 @@
 package dev.latvian.mods.kubejs.block.custom;
 
-import com.mojang.serialization.MapCodec;
 import dev.latvian.mods.kubejs.block.BlockBuilder;
 import dev.latvian.mods.kubejs.color.KubeColor;
 import dev.latvian.mods.kubejs.color.SimpleColor;

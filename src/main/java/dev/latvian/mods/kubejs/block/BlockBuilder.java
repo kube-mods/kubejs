@@ -1,11 +1,11 @@
 package dev.latvian.mods.kubejs.block;
 
-import dev.latvian.mods.kubejs.block.callback.BounceRestitutionCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockExplodedCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateMirrorCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateModifyCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateModifyPlacementCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateRotateCallback;
+import dev.latvian.mods.kubejs.block.callback.BounceRestitutionCallback;
 import dev.latvian.mods.kubejs.block.callback.CanBeReplacedCallback;
 import dev.latvian.mods.kubejs.block.callback.EntityBlockCallback;
 import dev.latvian.mods.kubejs.block.callback.EntityFallenOnBlockCallback;

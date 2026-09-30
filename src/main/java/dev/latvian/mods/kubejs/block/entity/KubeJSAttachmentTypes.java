@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.KubeJS;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
@@ -14,9 +16,6 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 
 public class KubeJSAttachmentTypes {
 	public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, KubeJS.MOD_ID);

@@ -2,8 +2,8 @@ package dev.latvian.mods.kubejs.block.drop;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import org.jspecify.annotations.Nullable;
 
 public record BlockDrops(ItemStack[] items, @Nullable ContextIntProvider rolls, @Nullable Item defaultItem) {
