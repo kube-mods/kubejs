@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
@@ -73,7 +74,7 @@ public class BlockDropsKubeEvent implements KubeEntityEvent {
 
 	public ItemEntity addItem(ItemStack item) {
 		double x = event.getPos().getX() + 0.5 + Mth.nextDouble(event.getLevel().getRandom(), -0.25, 0.25);
-		double y = event.getPos().getY() + 0.5 + Mth.nextDouble(event.getLevel().getRandom(), -0.25, 0.25) - EntityType.ITEM.getHeight() / 2.0;
+		double y = event.getPos().getY() + 0.5 + Mth.nextDouble(event.getLevel().getRandom(), -0.25, 0.25) - EntityTypes.ITEM.getHeight() / 2.0;
 		double z = event.getPos().getZ() + 0.5 + Mth.nextDouble(event.getLevel().getRandom(), -0.25, 0.25);
 		var entity = new ItemEntity(event.getLevel(), x, y, z, item);
 		event.getDrops().add(entity);
