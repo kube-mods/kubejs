@@ -54,7 +54,7 @@ public abstract class TagLoaderMixin<T> implements TagLoaderKJS<T> {
 
 	@Inject(method = "load", at = @At("RETURN"))
 	private void kjs$modifyLoadedTags(
-		ResourceManager manager,
+		ResourceManager resourceManager,
 		CallbackInfoReturnable<Map<Identifier, List<EntryWithSource>>> cir
 	) {
 		var ssm = kjs$getServerScriptManager();

@@ -17,12 +17,13 @@ public class WorldLoaderMixin {
 		method = "lambda$load$0",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/resources/RegistryDataLoader;load(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;",
+			target = "Lnet/minecraft/resources/RegistryDataLoader;load(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/List;)Ljava/util/concurrent/CompletableFuture;",
 			shift = At.Shift.BEFORE
 		)
 	)
 	private static void kjs$load(
 		CallbackInfoReturnable<CompletionStage<?>> cir,
+		//TODO @Local does not match any or matched multiple local variables in the target method
 		@Local(name = "worldgenLoadContext") RegistryAccess.Frozen worldgenLoadContext
 	) {
 		RegistryAccessContainer.current = new RegistryAccessContainer(worldgenLoadContext);
@@ -38,7 +39,7 @@ public class WorldLoaderMixin {
 	)
 	private static void kjs$load2(
 		CallbackInfoReturnable<CompletionStage<?>> cir,
-		@Local(argsOnly = true, ordinal = 1) RegistryAccess.Frozen initialWorldgenDimensions
+		@Local(argsOnly = true, name = "initialWorldgenDimensions") RegistryAccess.Frozen initialWorldgenDimensions
 	) {
 		RegistryAccessContainer.current = new RegistryAccessContainer(initialWorldgenDimensions);
 	}

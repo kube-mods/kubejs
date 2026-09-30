@@ -18,7 +18,7 @@ public abstract class WorldLoaderPackConfigMixin {
 		value = "NEW",
 		target = "(Lnet/minecraft/server/packs/PackType;Ljava/util/List;)Lnet/minecraft/server/packs/resources/MultiPackResourceManager;")
 	)
-	private MultiPackResourceManager kjs$createResourceManager(PackType type, List<PackResources> original, Operation<MultiPackResourceManager> ctor) {
-		return ServerScriptManager.bindServerResources(original, true, ctor::call);
+	private MultiPackResourceManager kjs$createResourceManager(PackType type, List<PackResources> packs, Operation<MultiPackResourceManager> ctor) {
+		return ServerScriptManager.bindServerResources(packs, true, ctor::call);
 	}
 }

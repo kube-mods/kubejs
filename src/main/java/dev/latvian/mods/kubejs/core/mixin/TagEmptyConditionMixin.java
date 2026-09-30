@@ -19,8 +19,8 @@ public abstract class TagEmptyConditionMixin {
 	private TagKey<Item> tag;
 
 	@Inject(method = "test", at = @At("HEAD"), cancellable = true, remap = false)
-	private void kjs$test(ICondition.IContext ctx, CallbackInfoReturnable<Boolean> cir) {
-		if (ctx instanceof RegistryAccessContainer c && c.cachedItemTags != null) {
+	private void kjs$test(ICondition.IContext context, CallbackInfoReturnable<Boolean> cir) {
+		if (context instanceof RegistryAccessContainer c && c.cachedItemTags != null) {
 			cir.setReturnValue(c.cachedItemTags.isEmpty(tag));
 		}
 	}
