@@ -31,15 +31,8 @@ public class FallingBlockBuilder extends BlockBuilder {
 	}
 
 	static class KubeJSFallingBlock extends FallingBlock {
-		private static final MapCodec<KubeJSFallingBlock> CODEC = simpleCodec(KubeJSFallingBlock::new);
-
 		public KubeJSFallingBlock(Properties p) {
 			super(p);
-		}
-
-		@Override
-		protected MapCodec<KubeJSFallingBlock> codec() {
-			return CODEC;
 		}
 
 		@Override
