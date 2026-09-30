@@ -84,7 +84,9 @@ import dev.latvian.mods.kubejs.plugin.builtin.wrapper.DamageSourceWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.DataMapWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.DirectionWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.EntitySelectorWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.FloatWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IngredientWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IntWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.ItemWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.JavaWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.KMath;
@@ -263,6 +265,8 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -526,7 +530,8 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 		registry.register(AABB.class, AABBWrapper::wrap);
 		registry.register(IntProvider.class, MiscWrappers::wrapIntProvider);
 		registry.register(FloatProvider.class, MiscWrappers::wrapFloatProvider);
-		registry.register(NumberProvider.class, MiscWrappers::wrapNumberProvider);
+		registry.register(ContextFloatProvider.class, FloatWrapper::wrapContextFloatProvider);
+		registry.register(ContextIntProvider.class, IntWrapper::wrapContextIntProvider);
 		registry.registerEnumFromStringCodec(LootContext.EntityTarget.class, LootContext.EntityTarget.CODEC);
 
 		// No equivalent
