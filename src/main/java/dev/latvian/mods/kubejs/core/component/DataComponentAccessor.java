@@ -1,8 +1,10 @@
 package dev.latvian.mods.kubejs.core.component;
 
+import com.mojang.authlib.GameProfile;
 import dev.latvian.mods.kubejs.color.KubeColor;
 import dev.latvian.mods.kubejs.component.CustomModelDataType;
 import dev.latvian.mods.kubejs.util.Cast;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import net.minecraft.advancements.predicates.ItemPredicate;
@@ -13,6 +15,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
@@ -28,11 +31,13 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.component.SeededContainerLoot;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static dev.latvian.mods.kubejs.component.DataComponentWrapper.tryWrapComponent;
@@ -126,7 +131,7 @@ public interface DataComponentAccessor extends DataComponentGetter, DataComponen
 		kjs$override(DataComponents.POTION_CONTENTS, new PotionContents(potion));
 	}
 
-	default void kjs$setEntityData(CompoundTag tag) {
+	default void kjs$setEntityData(Context cx, CompoundTag tag) {
 		if (tag.isEmpty()) {
 			kjs$remove(DataComponents.ENTITY_DATA);
 			return;
@@ -137,11 +142,11 @@ public interface DataComponentAccessor extends DataComponentGetter, DataComponen
 			throw new IllegalArgumentException("ENTITY_DATA tag must contain non-empty \"id\"");
 		}
 
-		var type = EntityType.by(id.get()).orElseThrow(() -> new IllegalArgumentException("Unknown entity id: " + id));
+		var type = EntityType.by(TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccessContainer.of(cx), tag)).orElseThrow(() -> new IllegalArgumentException("Unknown entity id: " + id));
 		kjs$override(DataComponents.ENTITY_DATA, TypedEntityData.of(type, tag));
 	}
 
-	default void kjs$setProfile(com.mojang.authlib.GameProfile profile) {
+	default void kjs$setProfile(GameProfile profile) {
 		kjs$override(DataComponents.PROFILE, ResolvableProfile.createResolved(profile));
 	}
 
