@@ -46,7 +46,7 @@ public class KubeRecipeEventOps<T> extends ConditionalOps<T> {
 	public static final Codec<KubeRecipe> SYNTHETIC_CODEC = KUBE_RECIPE_CODEC.xmap(MARK_SYNTHETIC, MARK_SYNTHETIC);
 
 	public KubeRecipeEventOps(RecipesKubeEvent event, RegistryOps<T> ops) {
-		super(ops, event.registries);
+		super(ops, event.registries.context());
 		this.event = event;
 	}
 }
