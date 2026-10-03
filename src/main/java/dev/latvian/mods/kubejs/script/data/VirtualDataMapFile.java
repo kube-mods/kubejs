@@ -131,7 +131,7 @@ public class VirtualDataMapFile<RT, DT> implements BiConsumer<Identifier, DT> {
 		for (var holderEntry : additions.entrySet()) {
 			Holder<RT> holder = holderEntry.getKey();
 			DataMapEntry<DT> entry = holderEntry.getValue();
-			map.put(Either.right(holder.getKey()), Optional.of(new WithConditions<>(List.of(), entry)));
+			map.put(Either.right(holder.key()), Optional.of(new WithConditions<>(List.of(), entry)));
 		}
 	}
 
@@ -141,7 +141,7 @@ public class VirtualDataMapFile<RT, DT> implements BiConsumer<Identifier, DT> {
 		}
 
 		for (var removal : removals) {
-			list.add(new DataMapEntry.Removal<>(Either.right(removal.getKey()), Optional.empty()));
+			list.add(new DataMapEntry.Removal<>(Either.right(removal.key()), Optional.empty()));
 		}
 	}
 

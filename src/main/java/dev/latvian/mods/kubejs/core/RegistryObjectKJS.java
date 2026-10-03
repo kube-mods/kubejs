@@ -47,7 +47,7 @@ public interface RegistryObjectKJS<T> extends SpecialEquality {
 	@SuppressWarnings("unchecked")
 	default ResourceKey<T> kjs$getKey() {
 		try {
-			return kjs$asHolder().getKey();
+			return kjs$asHolder().key();
 		} catch (Exception ex) {
 			return kjs$getRegistry().getResourceKey((T) this).orElseThrow();
 		}

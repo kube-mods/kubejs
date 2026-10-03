@@ -106,7 +106,7 @@ public record RegistryComponent<T>(
 
 	@Override
 	public void buildUniqueId(UniqueIdBuilder builder, Holder<T> value) {
-		var id = value.getKey();
+		var id = value.key();
 
 		if (id != null) {
 			builder.append(id.identifier());
