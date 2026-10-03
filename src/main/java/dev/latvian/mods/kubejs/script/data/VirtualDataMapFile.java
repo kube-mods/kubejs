@@ -49,7 +49,7 @@ public class VirtualDataMapFile<RT, DT> implements BiConsumer<Identifier, DT> {
 	public VirtualDataMapFile(DataMapType<RT, DT> type, VirtualDataPack pack) {
 		this.pack = pack;
 		this.registryAccess = pack.getRegistries();
-		this.registry = registryAccess.lookupOrThrow(type.registryKey());
+		this.registry = registryAccess.getRegistryAccess().lookupOrThrow(type.registryKey());
 	}
 
 	/// Causes this data map file to replace all other existing entries rather than merge with them.

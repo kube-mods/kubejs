@@ -198,8 +198,11 @@ public class ServerScriptManager extends ScriptManager {
 					}
 
 					@Override
-					public Stream<RegistryEntry<?>> registries() {
-						return current.registries();
+					public Stream<RegistryAccess.RegistryEntry<?>> registries() {
+						return current.listRegistryKeys().map(key -> {
+							Registry<?> reg = this.lookup(Cast.to(key)).orElseThrow();
+							return new RegistryAccess.RegistryEntry<>(Cast.to(key), Cast.to(reg));
+						});
 					}
 				});
 

@@ -327,7 +327,7 @@ public interface DataComponentWrapper {
 				if (!errors.isEmpty()) {
 					var joiner = new StringJoiner("; ");
 					errors.forEach((type, error) -> {
-						var id = reg.lookupOrThrow(Registries.DATA_COMPONENT_TYPE).getKeyOrNull(type);
+						var id = reg.registry(Registries.DATA_COMPONENT_TYPE).getKeyOrNull(type);
 						joiner.add("'%s' -> %s".formatted(id, error));
 					});
 					yield error(() -> "Invalid component map format, errored input: [%s]".formatted(joiner.toString()), builder.build());
@@ -368,7 +368,7 @@ public interface DataComponentWrapper {
 				if (!errors.isEmpty()) {
 					var joiner = new StringJoiner("; ");
 					errors.forEach((type, error) -> {
-						var id = reg.lookupOrThrow(Registries.DATA_COMPONENT_TYPE).getKeyOrNull(type);
+						var id = reg.registry(Registries.DATA_COMPONENT_TYPE).getKeyOrNull(type);
 						joiner.add("'%s' -> %s".formatted(id, error));
 					});
 					yield error(() -> "Invalid component map format, errored input: [%s]".formatted(joiner.toString()), builder.build());

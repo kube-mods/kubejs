@@ -169,4 +169,9 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 	public <E> Optional<Registry<E>> lookup(ResourceKey<? extends Registry<? extends E>> registryKey) {
 		return access.lookup(registryKey);
 	}
+
+	// registryAccess is marked for removal, so we don't use that method
+	public RegistryAccess getRegistryAccess() {
+		return access;
+	}
 }

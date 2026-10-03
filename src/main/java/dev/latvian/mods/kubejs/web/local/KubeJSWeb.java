@@ -378,7 +378,7 @@ public class KubeJSWeb {
 
 	private static HTTPResponse getRegistriesResponse(KJSHTTPRequest req) {
 		return HTTPResponse.ok().content(JsonContent.array(json -> {
-			for (var registry : req.registries().registryAccess().registries().toList()) {
+			for (var registry : req.registries().getRegistryAccess().registries().toList()) {
 				json.add(registry.key().identifier().toString());
 			}
 		}));
