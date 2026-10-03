@@ -22,7 +22,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.BlockReplacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockStateMatchTest;
@@ -177,9 +177,9 @@ public sealed interface BlockStatePredicate extends Predicate<BlockState>, Repla
 		return set;
 	}
 
-	default boolean check(List<OreConfiguration.TargetBlockState> targetStates) {
+	default boolean check(List<BlockReplacement> targetStates) {
 		for (var state : targetStates) {
-			if (test(state.state)) {
+			if (test(state.state())) {
 				return true;
 			}
 		}

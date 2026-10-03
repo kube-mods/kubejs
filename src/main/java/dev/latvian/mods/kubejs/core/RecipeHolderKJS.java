@@ -80,8 +80,8 @@ public interface RecipeHolderKJS extends RecipeLikeKJS {
 	default boolean hasOutput(RecipeMatchContext cx, ReplacementMatchInfo match) {
 		if (match.match() instanceof ItemMatch m) {
 			var displayContext = new ContextMap.Builder()
-				.withOptionalParameter(SlotDisplayContext.REGISTRIES, cx.registries())
-				.create(SlotDisplayContext.CONTEXT);
+				.set(SlotDisplayContext.REGISTRIES, cx.registries().registryAccess())
+				.buildAndValidate(SlotDisplayContext.CONTEXT);
 
 			var stream = kjs$getRecipe().display().stream()
 				.flatMap(display -> display.result().resolveForStacks(displayContext).stream())

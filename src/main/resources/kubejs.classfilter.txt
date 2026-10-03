@@ -50,6 +50,7 @@
 - dev.latvian.mods.kubejs.script
 - dev.latvian.mods.kubejs.plugin
 - dev.latvian.mods.kubejs.core
+- dev.latvian.mods.kubejs.util.PlatformUtil
 
 # Minecraft
 + net.minecraft

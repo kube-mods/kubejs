@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public abstract class CommandSourceStackMixin {
 	@Shadow
 	@HideFromJS
-	public abstract void sendSuccess(Supplier<Component> supplier, boolean bl);
+	public abstract void sendSuccess(Supplier<Component> messageSupplier, boolean broadcast);
 
 	@Unique
 	public void kjs$sendSuccess(Component component, boolean broadcastToAdmins) {

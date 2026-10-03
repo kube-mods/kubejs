@@ -12,6 +12,7 @@ import dev.latvian.mods.kubejs.script.KubeJSContext;
 import dev.latvian.mods.kubejs.server.DataExport;
 import dev.latvian.mods.rhino.Context;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,7 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class RegistryAccessContainer extends RegistryOpsContainer implements RegistryAccess, ICondition.IContext {
+public final class RegistryAccessContainer extends RegistryOpsContainer implements RegistryAccess {
 	public static final RegistryAccessContainer BUILTIN = new RegistryAccessContainer(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
 
 	// Still necessary because STARTUP and CLIENT scripts need to know about registries
@@ -56,6 +57,7 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 	public @Nullable CachedTagLookup<Block> cachedBlockTags;
 	public @Nullable CachedTagLookup<Fluid> cachedFluidTags;
 	private final Map<Identifier, RegistryWrapper> cachedRegistryWrappers = new HashMap<>();
+	private final ICondition.IContext context;
 
 	public RegistryAccessContainer(RegistryAccess.Frozen access) {
 		super(
@@ -68,6 +70,7 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 		this.damageSources = null;
 		this.itemStackParseCache = new HashMap<>();
 		this.cachedRegistryTags = new Reference2ObjectOpenHashMap<>();
+		this.context = new ConditionContext();
 	}
 
 	public Registry<Item> item() {
@@ -143,14 +146,13 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 		return cachedRegistryWrappers.computeIfAbsent(id, this::createRegistryWrapper);
 	}
 
-	@Override
+	// Use the method available via #context
+	@Deprecated
 	public <T> boolean isTagLoaded(TagKey<T> key) {
-		var cached = cachedRegistryTags.get(key.registry());
-		return cached != null && cached.lookup().tagMap().containsKey(key.location());
+		return context.isTagLoaded(key);
 	}
 
 	// TODO: move to the ContextAwareReloadListener lookup somehow??
-	@Override
 	public RegistryAccess.Frozen registryAccess() {
 		return access;
 	}
@@ -163,5 +165,31 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 	@Override
 	public Stream<RegistryEntry<?>> registries() {
 		return access.registries();
+	}
+
+	public ICondition.IContext context() {
+		return context;
+	}
+
+	public class ConditionContext implements ICondition.IContext {
+
+		@Override
+		public <T> boolean isTagLoaded(TagKey<T> key) {
+			var cached = cachedRegistryTags.get(key.registry());
+			return cached != null && cached.lookup().tagMap().containsKey(key.location());
+		}
+
+		public RegistryAccess registryAccess() {
+			return access;
+		}
+
+		@Override
+		public HolderGetter.Provider registries() {
+			return access;
+		}
+
+		public RegistryAccessContainer container() {
+			return RegistryAccessContainer.this;
+		}
 	}
 }

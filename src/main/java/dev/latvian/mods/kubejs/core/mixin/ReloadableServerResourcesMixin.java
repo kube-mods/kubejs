@@ -6,7 +6,6 @@ import dev.latvian.mods.kubejs.core.ScriptManagerHolderKJS;
 import dev.latvian.mods.kubejs.server.ServerScriptManager;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentInitializers;
@@ -57,7 +56,7 @@ public abstract class ReloadableServerResourcesMixin implements ReloadableServer
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void kjs$init(
-		LayeredRegistryAccess fullLayers, HolderLookup.Provider loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, List newComponents, CallbackInfo ci
+		ReloadableServerRegistries.LoadResult loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List<?> postponedTags, PermissionSet functionCompilationPermissions, List<?> newComponents, CallbackInfo ci
 	) {
 		recipes.kjs$setResources(this);
 	}
@@ -81,7 +80,7 @@ public abstract class ReloadableServerResourcesMixin implements ReloadableServer
 		method = "lambda$loadResources$2",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/neoforged/neoforge/event/EventHooks;onResourceReload(Lnet/minecraft/server/ReloadableServerResources;Lnet/minecraft/core/RegistryAccess;Ljava/util/Map;)Ljava/util/List;",
+			target = "Lnet/neoforged/neoforge/event/EventHooks;onResourceReload(Lnet/minecraft/server/ReloadableServerResources;Ljava/util/Map;)Ljava/util/List;",
 			shift = At.Shift.BEFORE
 		)
 	)
@@ -89,13 +88,13 @@ public abstract class ReloadableServerResourcesMixin implements ReloadableServer
 		ReloadableServerRegistries.LoadResult fullRegistries,
 		FeatureFlagSet enabledFeatures,
 		Commands.CommandSelection commandSelection,
-		List updatedContextTags,
+		List<?> updatedContextTags,
 		PermissionSet functionCompilationPermissions,
 		ResourceManager resourceManager,
 		Executor backgroundExecutor,
 		Executor mainThreadExecutor,
-		List pendingComponents,
-		CallbackInfoReturnable<CompletionStage> cir,
+		List<?> pendingComponents,
+		CallbackInfoReturnable<CompletionStage<?>> cir,
 		@Local(name = "result") ReloadableServerResources result
 	) {
 		var ssm = ((ScriptManagerHolderKJS) resourceManager).kjs$getScriptManager();

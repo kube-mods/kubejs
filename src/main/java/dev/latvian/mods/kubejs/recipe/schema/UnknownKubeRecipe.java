@@ -74,8 +74,8 @@ public class UnknownKubeRecipe extends KubeRecipe {
 			}
 
 			var ctx = new ContextMap.Builder()
-				.withOptionalParameter(SlotDisplayContext.REGISTRIES, type.event.registries)
-				.create(SlotDisplayContext.CONTEXT);
+				.set(SlotDisplayContext.REGISTRIES, type.event.registries.registryAccess())
+				.buildAndValidate(SlotDisplayContext.CONTEXT);
 
 			var displays = original.display();
 			if (displays.isEmpty()) {

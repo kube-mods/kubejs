@@ -5,6 +5,7 @@ import com.mojang.serialization.DynamicOps;
 import dev.latvian.mods.kubejs.codec.KubeJSCodecs;
 import dev.latvian.mods.kubejs.component.DataComponentWrapper;
 import dev.latvian.mods.kubejs.core.component.ItemComponentFunctions;
+import dev.latvian.mods.kubejs.core.mixin.DataComponentPatchAccessorMixin;
 import dev.latvian.mods.kubejs.level.LevelBlock;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IngredientWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.ItemWrapper;
@@ -241,9 +242,10 @@ public interface ItemStackKJS extends
 			return Ingredient.of(HolderSet.direct(kjs$asHolder()));
 		}
 		var map = DataComponentMap.builder();
-		for (var entry : p.entrySet()) {
-			if (entry.getValue().isPresent()) {
-				map.set(entry.getKey(), Cast.to(entry.getValue().get()));
+		var content = ((DataComponentPatchAccessorMixin) (Object) p).getMap();
+		for (var entry : content.entrySet()) {
+			if (entry.getValue() != null) {
+				map.set(entry.getKey(), Cast.to(entry.getValue()));
 			}
 		}
 		return IngredientWrapper.withData(HolderSet.direct(kjs$asHolder()), map.build());

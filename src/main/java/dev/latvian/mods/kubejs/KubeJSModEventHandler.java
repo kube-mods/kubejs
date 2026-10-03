@@ -9,7 +9,6 @@ import dev.latvian.mods.kubejs.item.creativetab.CreativeTabKubeEvent;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugins;
 import dev.latvian.mods.kubejs.plugin.builtin.event.StartupEvents;
-import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ConsoleLine;
@@ -31,7 +30,6 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
-import net.neoforged.neoforge.event.ModifyRecipeJsonsEvent;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
@@ -48,16 +46,6 @@ public class KubeJSModEventHandler {
 	@SubscribeEvent
 	public static void modifyDefaultComponents(ModifyDefaultComponentsEvent event) {
 		UtilsJS.postItemModificationEvents(event);
-	}
-
-	@SubscribeEvent
-	public static void modifyRecipeJsons(ModifyRecipeJsonsEvent event) {
-		if (!RecipesKubeEvent.INSTANCE.isBound()) {
-			KubeJS.LOGGER.warn("Recipe event is not bound, is another mod calling ModifyRecipeJsonsEvent?!");
-			return;
-		}
-
-		RecipesKubeEvent.INSTANCE.get().post(event.getOps(), event.getRecipeJsons());
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)

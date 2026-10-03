@@ -23,7 +23,7 @@ public class FallingBlockEntityMixin {
 	@Shadow
 	private BlockState blockState;
 
-	@Inject(method = "fall", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z", shift = At.Shift.BEFORE))
+	@Inject(method = "fall", cancellable = true, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z", shift = At.Shift.BEFORE))
 	private static void kjs$fallStart(Level level, BlockPos pos, BlockState state, CallbackInfoReturnable<FallingBlockEntity> cir, @Local(name = "entity") FallingBlockEntity entity) {
 		if (!level.isClientSide() && BlockEvents.STARTED_FALLING.hasListeners(state.kjs$getKey())) {
 			if (BlockEvents.STARTED_FALLING.post(ScriptType.SERVER, state.kjs$getKey(), new BlockStartedFallingKubeEvent(level, pos, state, entity)).interruptFalse()) {

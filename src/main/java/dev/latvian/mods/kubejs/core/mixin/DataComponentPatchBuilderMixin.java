@@ -24,7 +24,7 @@ public abstract class DataComponentPatchBuilderMixin implements DataComponentAcc
 
 	@Shadow
 	@HideFromJS // replaced by kjs$set, which accepts a nullable value
-	public abstract <T> DataComponentPatch.Builder set(DataComponentType<T> component, T value);
+	public abstract <T> DataComponentPatch.Builder set(DataComponentType<T> type, T value);
 
 	@Override
 	public <T> @Nullable T get(DataComponentType<? extends T> type) {

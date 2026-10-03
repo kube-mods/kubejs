@@ -1,6 +1,5 @@
 package dev.latvian.mods.kubejs.block.custom;
 
-import com.mojang.serialization.MapCodec;
 import dev.latvian.mods.kubejs.block.BlockBuilder;
 import dev.latvian.mods.kubejs.color.KubeColor;
 import dev.latvian.mods.kubejs.color.SimpleColor;
@@ -31,15 +30,8 @@ public class FallingBlockBuilder extends BlockBuilder {
 	}
 
 	static class KubeJSFallingBlock extends FallingBlock {
-		private static final MapCodec<KubeJSFallingBlock> CODEC = simpleCodec(KubeJSFallingBlock::new);
-
 		public KubeJSFallingBlock(Properties p) {
 			super(p);
-		}
-
-		@Override
-		protected MapCodec<KubeJSFallingBlock> codec() {
-			return CODEC;
 		}
 
 		@Override

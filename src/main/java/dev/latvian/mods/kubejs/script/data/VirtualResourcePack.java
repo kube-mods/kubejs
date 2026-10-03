@@ -8,7 +8,7 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.AbstractPackResources;
+import net.minecraft.server.packs.AbstractPackMetadataResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class VirtualResourcePack extends AbstractPackResources implements KubeResourceGenerator, ExportablePackResources {
+public class VirtualResourcePack extends AbstractPackMetadataResources implements KubeResourceGenerator, ExportablePackResources {
 	public final ScriptType scriptType;
 	public final PackType packType;
 	public final GeneratedDataStage stage;

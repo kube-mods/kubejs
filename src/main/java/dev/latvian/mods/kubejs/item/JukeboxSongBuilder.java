@@ -2,12 +2,12 @@ package dev.latvian.mods.kubejs.item;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.JukeboxSong;
 
 @ReturnsSelf

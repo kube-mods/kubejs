@@ -1,6 +1,7 @@
 package dev.latvian.mods.kubejs.level.ruletest;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
@@ -27,9 +28,9 @@ public class AnyMatchRuleTest extends RuleTest {
 	}
 
 	@Override
-	public boolean test(BlockState blockState, RandomSource random) {
+	public boolean test(BlockState blockState, BlockPos blockPos, RandomSource random) {
 		for (var test : rules) {
-			if (test.test(blockState, random)) {
+			if (test.test(blockState, blockPos, random)) {
 				return true;
 			}
 		}

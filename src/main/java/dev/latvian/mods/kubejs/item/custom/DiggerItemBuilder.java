@@ -2,10 +2,7 @@ package dev.latvian.mods.kubejs.item.custom;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.common.Tags;
 
@@ -51,7 +48,7 @@ public class DiggerItemBuilder extends HandheldItemBuilder {
 		public static final Identifier SHOVEL_MODEL = Identifier.withDefaultNamespace("item/iron_shovel");
 
 		public Shovel(Identifier i) {
-			super(i, 1.5F, -3F, (material, props) -> new ShovelItem(material, 1.5F, -3F, props));
+			super(i, 1.5F, -3F, (material, props) -> new Item(props.shovel(material, 1.5F, -3F)));
 			parentModel = SHOVEL_MODEL;
 			tag(SHOVEL_TAGS);
 		}
@@ -65,7 +62,7 @@ public class DiggerItemBuilder extends HandheldItemBuilder {
 		public static final Identifier AXE_MODEL = Identifier.withDefaultNamespace("item/iron_axe");
 
 		public Axe(Identifier i) {
-			super(i, 6F, -3.1F, (material, props) -> new AxeItem(material, 6F, -3.1F, props));
+			super(i, 6F, -3.1F, (material, props) -> new Item(props.axe(material, 6F, -3.1F)));
 			parentModel = AXE_MODEL;
 			tag(AXE_TAGS);
 		}
@@ -79,7 +76,7 @@ public class DiggerItemBuilder extends HandheldItemBuilder {
 		public static final Identifier HOE_MODEL = Identifier.withDefaultNamespace("item/iron_hoe");
 
 		public Hoe(Identifier i) {
-			super(i, 0F, -3F, (material, props) -> new HoeItem(material, 0F, -3F, props));
+			super(i, 0F, -3F, (material, props) -> new Item(props.hoe(material, 0F, -3F)));
 			parentModel = HOE_MODEL;
 			tag(HOE_TAGS);
 		}

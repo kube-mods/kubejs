@@ -12,7 +12,8 @@ import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
-import net.minecraft.advancements.criterion.StatePropertiesPredicate;
+import net.minecraft.advancements.predicates.BlockPredicate;
+import net.minecraft.advancements.predicates.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
@@ -28,9 +29,10 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
@@ -125,7 +127,7 @@ public class CropBlockBuilder extends BlockBuilder {
 	public transient @Nullable ToIntFunction<RandomTickCallback> fertilizerCallback;
 	public transient @Nullable SurviveCallback surviveCallback;
 
-	public transient List<Pair<Holder<Item>, NumberProvider>> outputs;
+	public transient List<Pair<Holder<Item>, Holder<ContextIntProvider>>> outputs;
 	public transient boolean noSeeds;
 
 	public CropBlockBuilder(Identifier id) {
@@ -169,12 +171,12 @@ public class CropBlockBuilder extends BlockBuilder {
 
 	@Info("Add a crop output with exactly one output.")
 	public CropBlockBuilder crop(Holder<Item> output) {
-		crop(output, ConstantValue.exactly(1.0f));
+		crop(output, Holder.direct(new ConstantValue(1)));
 		return this;
 	}
 
 	@Info("Add a crop output with a specific amount.")
-	public CropBlockBuilder crop(Holder<Item> output, NumberProvider chance) {
+	public CropBlockBuilder crop(Holder<Item> output, Holder<ContextIntProvider> chance) {
 		outputs.add(new Pair<>(output, chance));
 		return this;
 	}
@@ -233,8 +235,9 @@ public class CropBlockBuilder extends BlockBuilder {
 		// TODO: Use this lookup to apply fortune bonus
 		var registries = generator.getRegistries();
 
-		var mature = LootItemBlockStatePropertyCondition.hasBlockStateProperties(this.get())
-			.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CropBlock.AGE, age));
+		var mature = Holder.direct(new MatchBlock(BlockPredicate.Builder.block()
+			.of(registries.block(), this.get())
+			.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(CropBlock.AGE, age)).build()));
 
 		var builder = LootTable.lootTable();
 		for (var output : outputs) {
@@ -243,13 +246,13 @@ public class CropBlockBuilder extends BlockBuilder {
 			}
 			var cropItem = LootItem.lootTableItem(output.getFirst().value())
 				.apply(SetItemCountFunction.setCount(output.getSecond()))
-				.when(mature);
+				.when((LootItemCondition.Builder) mature);
 			builder.withPool(LootPool.lootPool().add(cropItem));
 		}
 
 		if (itemBuilder != null && !noSeeds) {
 			var pool = LootPool.lootPool().add(LootItem.lootTableItem(itemBuilder.get())
-				.when(mature)
+				.when((LootItemCondition.Builder) mature)
 				.otherwise(LootItem.lootTableItem(itemBuilder.get()))
 			);
 

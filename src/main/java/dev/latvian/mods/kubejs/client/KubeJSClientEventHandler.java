@@ -433,10 +433,8 @@ public class KubeJSClientEventHandler {
 	}
 
 	@SubscribeEvent
-	public static void tagsUpdated(TagsUpdatedEvent event) {
-		if (event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.CLIENT_PACKET_RECEIVED
-			&& Minecraft.getInstance().screen instanceof KubeJSErrorScreen screen
-			&& screen.scriptType == ScriptType.SERVER) {
+	public static void tagsUpdated(TagsUpdatedEvent.ClientPacketReceived event) {
+		if (Minecraft.getInstance().gui.screen() instanceof KubeJSErrorScreen screen && screen.scriptType == ScriptType.SERVER) {
 			Minecraft.getInstance().kjs$runCommand("kubejs errors server");
 		}
 	}

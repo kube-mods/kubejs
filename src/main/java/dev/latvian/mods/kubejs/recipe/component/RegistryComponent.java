@@ -17,8 +17,8 @@ import dev.latvian.mods.rhino.type.TypeInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.codec.RegistryFixedCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -106,7 +106,7 @@ public record RegistryComponent<T>(
 
 	@Override
 	public void buildUniqueId(UniqueIdBuilder builder, Holder<T> value) {
-		var id = value.getKey();
+		var id = value.key();
 
 		if (id != null) {
 			builder.append(id.identifier());

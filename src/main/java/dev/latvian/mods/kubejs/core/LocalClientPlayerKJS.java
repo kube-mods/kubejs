@@ -73,7 +73,7 @@ public interface LocalClientPlayerKJS extends ClientPlayerKJS {
 	@Override
 	default void kjs$notify(NotificationToastData notification) {
 		var mc = Minecraft.getInstance();
-		mc.getToastManager().addToast(new NotificationToast(mc, notification));
+		mc.gui.toastManager().addToast(new NotificationToast(mc, notification));
 	}
 
 	@Override

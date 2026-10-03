@@ -10,6 +10,7 @@ import dev.latvian.mods.kubejs.plugin.builtin.event.ClientEvents;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ScheduledEvents;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
+import net.minecraft.client.GameLoadCookie;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.packs.PackResources;
@@ -54,14 +55,14 @@ public abstract class MinecraftClientMixin implements MinecraftClientKJS {
 	}
 
 	@ModifyExpressionValue(
-		method = {"reloadResourcePacks(ZLnet/minecraft/client/Minecraft$GameLoadCookie;)Ljava/util/concurrent/CompletableFuture;", "<init>"},
+		method = {"reloadResourcePacks()Ljava/util/concurrent/CompletableFuture;", "<init>"},
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;openAllSelected()Ljava/util/List;")
 	)
 	private List<PackResources> kjs$loadPacks(List<PackResources> resources) {
 		return ClientAssetPacks.INSTANCE.inject(resources);
 	}
 
-	@Inject(method = "startAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V", shift = At.Shift.AFTER))
+	@Inject(method = "startAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/component/SwingAnimation;Z)Z", shift = At.Shift.AFTER))
 	private void kjs$startAttack(CallbackInfoReturnable<Boolean> cir) {
 		kjs$startAttack0();
 	}
@@ -87,8 +88,8 @@ public abstract class MinecraftClientMixin implements MinecraftClientKJS {
 		return ScheduledClientEvent.EVENTS;
 	}
 
-	@Inject(method = "reloadResourcePacks(ZLnet/minecraft/client/Minecraft$GameLoadCookie;)Ljava/util/concurrent/CompletableFuture;", at = @At("TAIL"))
-	private void kjs$endResourceReload(boolean bl, Minecraft.GameLoadCookie gameLoadCookie, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+	@Inject(method = "reloadResourcePacks(ZLnet/minecraft/client/GameLoadCookie;)Ljava/util/concurrent/CompletableFuture;", at = @At("TAIL"))
+	private void kjs$endResourceReload(boolean isRecovery, @Nullable GameLoadCookie loadCookie, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
 		CompletableFuture.runAsync(() -> kjs$afterResourcesLoaded(true), kjs$self());
 	}
 }

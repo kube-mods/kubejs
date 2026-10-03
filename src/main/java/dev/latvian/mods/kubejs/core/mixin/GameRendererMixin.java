@@ -17,12 +17,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GameRendererMixin {
 	@Shadow
 	@Final
-	Minecraft minecraft;
+	private Minecraft minecraft;
 
 	@Shadow
+	//TODO postEffectId does not exist
 	private @Nullable Identifier postEffectId;
 
 	@Shadow
+	//TODO setPostEffect does not exist
 	public abstract void setPostEffect(Identifier identifier);
 
 	@Inject(method = "checkEntityPostEffect", at = @At("HEAD"), cancellable = true)

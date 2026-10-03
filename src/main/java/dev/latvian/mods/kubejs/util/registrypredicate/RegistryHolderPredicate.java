@@ -14,7 +14,7 @@ public record RegistryHolderPredicate<T>(Holder<T> value) implements RegistryPre
 			if (value instanceof Holder.Reference<T> ref) {
 				return ref.key().identifier().toString();
 			} else {
-				return value.getKey().identifier().toString();
+				return value.key().identifier().toString();
 			}
 		} catch (Exception ex) {
 			return String.valueOf(value.value());

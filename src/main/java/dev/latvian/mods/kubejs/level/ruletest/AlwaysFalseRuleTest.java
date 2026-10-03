@@ -1,6 +1,7 @@
 package dev.latvian.mods.kubejs.level.ruletest;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
@@ -15,8 +16,8 @@ public class AlwaysFalseRuleTest extends RuleTest {
 	}
 
 	@Override
-	public boolean test(BlockState blockState, RandomSource random) {
-		return true;
+	public boolean test(BlockState blockState, BlockPos blockPos, RandomSource randomSource) {
+		return false;
 	}
 
 	@Override
