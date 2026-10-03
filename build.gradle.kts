@@ -1,7 +1,7 @@
 import com.almostreliable.almostgradle.dependency.LoadingMode
 
 plugins {
-	id("net.neoforged.moddev") version "2.0.138"
+	id("net.neoforged.moddev") version "2.0.148"
 	id("com.almostreliable.almostgradle") version "2.1.1"
 	id("idea")
 	// id("me.shedaniel.unified-publishing") version "0.1.+"
