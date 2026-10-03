@@ -1,6 +1,6 @@
 package dev.latvian.mods.kubejs.core.mixin;
 
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
+import dev.latvian.mods.kubejs.util.RegistryContextContainer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -20,8 +20,8 @@ public abstract class TagEmptyConditionMixin {
 
 	@Inject(method = "test", at = @At("HEAD"), cancellable = true, remap = false)
 	private void kjs$test(ICondition.IContext ctx, CallbackInfoReturnable<Boolean> cir) {
-		if (ctx instanceof RegistryAccessContainer c && c.cachedItemTags != null) {
-			cir.setReturnValue(c.cachedItemTags.isEmpty(tag));
+		if (ctx instanceof RegistryContextContainer c && c.getRegistries().cachedItemTags != null) {
+			cir.setReturnValue(c.getRegistries().cachedItemTags.isEmpty(tag));
 		}
 	}
 }

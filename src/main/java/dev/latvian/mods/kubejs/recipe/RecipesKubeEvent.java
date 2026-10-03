@@ -37,6 +37,7 @@ import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.kubejs.util.JsonIO;
 import dev.latvian.mods.kubejs.util.JsonUtils;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
+import dev.latvian.mods.kubejs.util.RegistryContextContainer;
 import dev.latvian.mods.kubejs.util.RegistryOpsContainer;
 import dev.latvian.mods.kubejs.util.TimeJS;
 import dev.latvian.mods.rhino.Context;
@@ -81,6 +82,7 @@ public class RecipesKubeEvent implements KubeEvent {
 
 	public final RecipeSchemaStorage recipeSchemaStorage;
 	public final RegistryAccessContainer registries;
+	public final RegistryContextContainer conditionContext;
 	public final RegistryOpsContainer ops;
 	public final Map<Identifier, KubeRecipe> originalRecipes;
 	public final Collection<KubeRecipe> addedRecipes;
@@ -109,6 +111,7 @@ public class RecipesKubeEvent implements KubeEvent {
 
 		this.recipeSchemaStorage = manager.recipeSchemaStorage;
 		this.registries = manager.getRegistries();
+		this.conditionContext = new RegistryContextContainer(registries);
 		this.ops = new RegistryOpsContainer(
 			new KubeRecipeEventOps<>(this, registries.nbt()),
 			new KubeRecipeEventOps<>(this, registries.json()),

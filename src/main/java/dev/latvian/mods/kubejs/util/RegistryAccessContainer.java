@@ -12,8 +12,6 @@ import dev.latvian.mods.kubejs.script.KubeJSContext;
 import dev.latvian.mods.kubejs.server.DataExport;
 import dev.latvian.mods.rhino.Context;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,7 +26,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -39,7 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class RegistryAccessContainer extends RegistryOpsContainer implements HolderLookup.Provider, ICondition.IContext {
+public final class RegistryAccessContainer extends RegistryOpsContainer implements RegistryAccess {
 	public static final RegistryAccessContainer BUILTIN = new RegistryAccessContainer(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
 
 	// Still necessary because STARTUP and CLIENT scripts need to know about registries
@@ -149,7 +146,6 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 		return cachedRegistryWrappers.computeIfAbsent(id, this::createRegistryWrapper);
 	}
 
-	@Override
 	public <T> boolean isTagLoaded(TagKey<T> key) {
 		var cached = cachedRegistryTags.get(key.registry());
 		return cached != null && cached.lookup().tagMap().containsKey(key.location());
@@ -161,13 +157,13 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 	}
 
 	@Override
-	public HolderGetter.Provider registries() {
-		return access;
+	public <E> Optional<Registry<E>> lookup(ResourceKey<? extends Registry<? extends E>> registryKey) {
+		return access.lookup(registryKey);
 	}
 
 	@Override
-	public <E> Optional<Registry<E>> lookup(ResourceKey<? extends Registry<? extends E>> registryKey) {
-		return access.lookup(registryKey);
+	public Stream<RegistryEntry<?>> registries() {
+		return access.registries();
 	}
 
 	// registryAccess is marked for removal, so we don't use that method
