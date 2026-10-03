@@ -54,7 +54,7 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 	public @Nullable CachedItemTagLookup cachedItemTags;
 	public @Nullable CachedTagLookup<Block> cachedBlockTags;
 	public @Nullable CachedTagLookup<Fluid> cachedFluidTags;
-	private final Map<Identifier, RegistryWrapper> cachedRegistryWrappers = new HashMap<>();
+	private final Map<Identifier, RegistryWrapper<?>> cachedRegistryWrappers = new HashMap<>();
 
 	public RegistryAccessContainer(RegistryAccess.Frozen access) {
 		super(
