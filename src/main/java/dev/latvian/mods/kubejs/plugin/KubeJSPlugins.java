@@ -15,6 +15,7 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ModResourceBindings;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.locating.IModFile;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -431,12 +432,12 @@ public class KubeJSPlugins {
 		List<String> requiredMods,
 		List<String> after
 	) {
-		public static PluginEntry of(Optional<Class<? extends KubeJSPlugin>> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
-			return new PluginEntry(Optional.empty(), pluginClass, clientOnly, requiredMods, after);
+		public static PluginEntry of(@Nullable Class<? extends KubeJSPlugin> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
+			return new PluginEntry(Optional.empty(), Optional.ofNullable(pluginClass), clientOnly, requiredMods, after);
 		}
 
-		public static PluginEntry of(String id, Optional<Class<? extends KubeJSPlugin>> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
-			return new PluginEntry(Optional.of(id), pluginClass, clientOnly, requiredMods, after);
+		public static PluginEntry of(String id, @Nullable Class<? extends KubeJSPlugin> pluginClass, boolean clientOnly, List<String> requiredMods, List<String> after) {
+			return new PluginEntry(Optional.of(id), Optional.ofNullable(pluginClass), clientOnly, requiredMods, after);
 		}
 	}
 
