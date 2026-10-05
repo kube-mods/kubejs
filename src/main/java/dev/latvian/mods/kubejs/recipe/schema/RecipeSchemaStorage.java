@@ -128,7 +128,7 @@ public class RecipeSchemaStorage {
 				var json = JsonUtils.GSON.fromJson(reader, JsonObject.class);
 
 				for (var entry1 : json.entrySet()) {
-					var id = Identifier.fromNamespaceAndPath(entry.getKey().getNamespace(), entry1.getKey());
+					var id = entry.getKey().withPath(entry1.getKey());
 
 					if (entry1.getValue() instanceof JsonArray arr) {
 						for (var n : arr) {
@@ -158,10 +158,10 @@ public class RecipeSchemaStorage {
 					var id = ID.kjs(componentDef.getKey());
 
 					COMPONENT_TYPES.put(RecipeComponentType.key(id), Suppliers.memoize(() ->
-							COMPONENT_CODEC.parse(ops, componentDef.getValue()).mapOrElse(c -> () -> MapCodec.unit(c), error -> {
-								KubeJS.LOGGER.error("Failed to load recipe component {} from {}: {}", id, entry.getKey(), error.message());
-								return null;
-							})
+						COMPONENT_CODEC.parse(ops, componentDef.getValue()).mapOrElse(c -> () -> MapCodec.unit(c), error -> {
+							KubeJS.LOGGER.error("Failed to load recipe component {} from {}: {}", id, entry.getKey(), error.message());
+							return null;
+						})
 					));
 				}
 			} catch (Exception ex) {
@@ -178,7 +178,7 @@ public class RecipeSchemaStorage {
 				BAKED_COMPONENT_TYPE_LOOKUP.put(type, key);
 			} catch (StackOverflowError error) {
 				var msg = "Encountered cyclic recipe component type reference while baking '" + key.identifier() + "'";
-                KubeJS.LOGGER.error(msg, error);
+				KubeJS.LOGGER.error(msg, error);
 				iterator.remove();
 			} catch (Exception e) {
 				var msg = "Encountered error while baking recipe component type '" + key.identifier() + "'";

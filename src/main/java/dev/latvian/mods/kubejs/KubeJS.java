@@ -50,9 +50,10 @@ public class KubeJS {
 	public static String QUERY;
 	public static String VERSION = "0";
 	public static String DISPLAY_NAME = "KubeJS";
+	public static final Identifier EMPTY_ID = Identifier.fromNamespaceAndPath(MOD_ID, "empty");
 
 	public static Identifier id(String path) {
-		return Identifier.fromNamespaceAndPath(MOD_ID, path);
+		return EMPTY_ID.withPath(path);
 	}
 
 	public static IEventBus modEventBus;

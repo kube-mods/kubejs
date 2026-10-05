@@ -41,7 +41,7 @@ public record GeneratedData(Identifier id, Supplier<byte[]> data) implements IoS
 	});
 
 	public static GeneratedData json(Identifier id, Supplier<JsonElement> json) {
-		return new GeneratedData(id.getPath().endsWith(".json") ? id : Identifier.fromNamespaceAndPath(id.getNamespace(), id.getPath() + ".json"), Lazy.of(() -> JsonIO.toString(json.get()).getBytes(StandardCharsets.UTF_8)));
+		return new GeneratedData(id.getPath().endsWith(".json") ? id : id.withPath(id.getPath() + ".json"), Lazy.of(() -> JsonIO.toString(json.get()).getBytes(StandardCharsets.UTF_8)));
 	}
 
 	@Override

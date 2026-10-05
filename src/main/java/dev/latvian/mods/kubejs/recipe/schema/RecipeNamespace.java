@@ -9,14 +9,16 @@ import java.util.NoSuchElementException;
 public class RecipeNamespace extends LinkedHashMap<String, RecipeSchemaType> {
 	public final RecipeSchemaStorage storage;
 	public final String name;
+	public final Identifier emptyId;
 
 	public RecipeNamespace(RecipeSchemaStorage storage, String name) {
 		this.storage = storage;
 		this.name = name;
+		this.emptyId = Identifier.fromNamespaceAndPath(name, "empty");
 	}
 
 	public RecipeNamespace register(String id, RecipeSchema type) {
-		put(id, new RecipeSchemaType(this, Identifier.fromNamespaceAndPath(name, id), type));
+		put(id, new RecipeSchemaType(this, emptyId.withPath(id), type));
 		return this;
 	}
 

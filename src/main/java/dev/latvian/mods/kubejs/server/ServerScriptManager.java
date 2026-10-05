@@ -246,9 +246,9 @@ public class ServerScriptManager extends ScriptManager {
 						var k = b.registryKey.identifier();
 
 						if (k.getNamespace().equals("minecraft")) {
-							registriesDataPack.json(Identifier.fromNamespaceAndPath(b.id.getNamespace(), k.getPath() + "/" + b.id.getPath()), json);
+							registriesDataPack.json(b.id.withPath(k.getPath() + "/" + b.id.getPath()), json);
 						} else {
-							registriesDataPack.json(Identifier.fromNamespaceAndPath(b.id.getNamespace(), k.getNamespace() + "/" + k.getPath() + "/" + b.id.getPath()), json);
+							registriesDataPack.json(b.id.withPath(k.getNamespace() + "/" + k.getPath() + "/" + b.id.getPath()), json);
 						}
 					} catch (Exception ex) {
 						ConsoleJS.SERVER.error("", new KubeRuntimeException("Failed to register object '" + b.id + "' of registry '" + b.registryKey.identifier() + "'!", ex).source(b.sourceLine));

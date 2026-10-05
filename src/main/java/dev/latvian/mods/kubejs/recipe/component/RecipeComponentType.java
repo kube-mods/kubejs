@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 @FunctionalInterface
 public interface RecipeComponentType<T> {
-	ResourceKey<Registry<RecipeComponentType<?>>> REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("kubejs", "recipe_component_type"));
+	ResourceKey<Registry<RecipeComponentType<?>>> REGISTRY_KEY = ResourceKey.createRegistryKey(KubeJS.id("recipe_component_type"));
 
 	static ResourceKey<RecipeComponentType<?>> key(Identifier id) {
 		return ResourceKey.create(REGISTRY_KEY, id);

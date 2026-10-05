@@ -28,7 +28,6 @@ import dev.latvian.mods.kubejs.util.StackTraceCollector;
 import dev.latvian.mods.kubejs.util.Tristate;
 import dev.latvian.mods.kubejs.web.LocalWebServer;
 import dev.latvian.mods.kubejs.web.WebServerProperties;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.gui.components.ImageButton;
@@ -147,14 +146,11 @@ public class KubeJSClientEventHandler {
 
 	@SubscribeEvent
 	public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
-		var mainCategory = new KeyMapping.Category(Identifier.fromNamespaceAndPath("kubejs", "kubejs"));
-		event.registerCategory(mainCategory);
-
 		var kubeEvent = new KeybindRegistryKubeEvent();
 		KeyBindEvents.REGISTRY.post(kubeEvent);
 
-		for (var catId : kubeEvent.categories()) {
-			event.registerCategory(new KeyMapping.Category(catId));
+		for (var category : kubeEvent.categories.values()) {
+			event.registerCategory(category);
 		}
 
 		for (var bind : kubeEvent.build()) {

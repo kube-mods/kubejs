@@ -231,7 +231,7 @@ public class KubeJSServerEventHandler {
 
 	@SubscribeEvent
 	public static void addReloadListeners(AddServerReloadListenersEvent event) {
-		event.addListener(Identifier.fromNamespaceAndPath(KubeJS.MOD_ID, "kubejs_resources"), new KubeJSReloadListener(event.getServerResources()));
+		event.addListener(KubeJS.id("kubejs_resources"), new KubeJSReloadListener(event.getServerResources()));
 	}
 
 	@SubscribeEvent

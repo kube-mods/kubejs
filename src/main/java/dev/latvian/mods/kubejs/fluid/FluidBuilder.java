@@ -46,8 +46,8 @@ public class FluidBuilder extends BuilderBase<FlowingFluid> {
 	public FluidBuilder(Identifier i) {
 		super(i);
 		fluidType = new FluidTypeBuilder(id);
-		this.stillTexture(Identifier.fromNamespaceAndPath("kubejs", "block/thin_fluid_still"))
-			.flowingTexture(Identifier.fromNamespaceAndPath("kubejs", "block/thin_fluid_flow"));
+		this.stillTexture(KubeJS.id("block/thin_fluid_still"))
+			.flowingTexture(KubeJS.id("block/thin_fluid_flow"));
 		flowingFluid = new FlowingFluidBuilder(this);
 		block = new FluidBlockBuilder(this);
 		bucketItem = new FluidBucketItemBuilder(this);
