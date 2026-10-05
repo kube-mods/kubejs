@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
+
 @Mixin(TagEmptyCondition.class)
 public abstract class TagEmptyConditionMixin {
 	@Shadow
@@ -20,8 +22,8 @@ public abstract class TagEmptyConditionMixin {
 
 	@Inject(method = "test", at = @At("HEAD"), cancellable = true, remap = false)
 	private void kjs$test(ICondition.IContext ctx, CallbackInfoReturnable<Boolean> cir) {
-		if (ctx instanceof RegistryAccessContainer c && c.cachedItemTags != null) {
-			cir.setReturnValue(c.cachedItemTags.isEmpty(tag));
+		if (ctx instanceof RegistryAccessContainer.ConditionContext c && c.container().cachedItemTags != null) {
+			cir.setReturnValue(Objects.requireNonNull(c.container().cachedItemTags).isEmpty(tag));
 		}
 	}
 }
