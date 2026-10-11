@@ -73,6 +73,7 @@
 - org.openjdk.nashorn
 - jdk.nashorn
 - org.lwjgl.system
+- scala.sys.process
 
 # NeoForge
 + net.neoforged
