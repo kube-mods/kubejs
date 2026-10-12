@@ -20,18 +20,13 @@ public abstract class GameRendererMixin {
 	private Minecraft minecraft;
 
 	@Shadow
-	//TODO postEffectId does not exist
-	private @Nullable Identifier postEffectId;
-
-	@Shadow
-	//TODO setPostEffect does not exist
-	public abstract void setPostEffect(Identifier identifier);
+	public abstract void setSpectatedEntityPostEffect(Identifier id);
 
 	@Inject(method = "checkEntityPostEffect", at = @At("HEAD"), cancellable = true)
 	private void kjs$checkEntityPostEffect(@Nullable Entity cameraEntity, CallbackInfo ci) {
 		var data = KubeSessionData.of(minecraft);
 		if (data != null && data.activePostShader != null) {
-			setPostEffect(data.activePostShader);
+			setSpectatedEntityPostEffect(data.activePostShader);
 			ci.cancel();
 		}
 	}
