@@ -363,8 +363,18 @@ public class ConsoleJS {
 		}
 	}
 
+	public void log(Context cx, Object... message) {
+		for (var s : message) {
+			info(cx, s);
+		}
+	}
+
 	public ConsoleLine info(Object message) {
 		return log(LogType.INFO, SourceLine.UNKNOWN, null, message);
+	}
+
+	public ConsoleLine info(Context cx, Object message) {
+		return log(LogType.INFO, SourceLine.of(cx), null, message);
 	}
 
 	public ConsoleLine infof(String message, Object... args) {
@@ -373,6 +383,10 @@ public class ConsoleJS {
 
 	public ConsoleLine warn(Object message) {
 		return log(LogType.WARN, SourceLine.UNKNOWN, null, message);
+	}
+
+	public ConsoleLine warn(Context cx, Object message) {
+		return log(LogType.WARN, SourceLine.of(cx), null, message);
 	}
 
 	public ConsoleLine warn(String message, Throwable error, @Nullable Pattern exitPattern) {
@@ -409,6 +423,10 @@ public class ConsoleJS {
 		return log(LogType.ERROR, SourceLine.UNKNOWN, null, message);
 	}
 
+	public ConsoleLine error(Context cx, Object message) {
+		return log(LogType.ERROR, SourceLine.of(cx), null, message);
+	}
+
 	public ConsoleLine error(String message, Throwable error, @Nullable Pattern exitPattern) {
 		return error(message, SourceLine.UNKNOWN, error, exitPattern);
 	}
@@ -438,6 +456,14 @@ public class ConsoleJS {
 	public ConsoleLine debug(Object message) {
 		if (shouldPrintDebug()) {
 			return log(LogType.DEBUG, SourceLine.UNKNOWN, null, message);
+		}
+
+		return null;
+	}
+
+	public ConsoleLine debug(Context cx, Object message) {
+		if (shouldPrintDebug()) {
+			return log(LogType.DEBUG, SourceLine.of(cx), null, message);
 		}
 
 		return null;
