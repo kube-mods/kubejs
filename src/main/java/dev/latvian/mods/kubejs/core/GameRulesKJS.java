@@ -21,7 +21,7 @@ public interface GameRulesKJS {
 	default GameRule<?> kjs$getRule(String rule) {
 		Identifier id = Identifier.tryParse(rule);
 		if (id == null) {
-			id = Identifier.fromNamespaceAndPath("minecraft", rule);
+			id = Identifier.withDefaultNamespace(rule);
 		}
 		return BuiltInRegistries.GAME_RULE.getOptional(id).orElse(null);
 	}

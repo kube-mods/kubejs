@@ -242,8 +242,7 @@ public interface ItemWrapper {
 
 		return BuiltInRegistries.ITEM
 			.get(key)
-			.map(h -> (Holder<Item>) h)
-			.map(DataResult::success)
+			.map(h -> DataResult.success((Holder<Item>) h))
 			.orElseGet(() -> DataResult.error(() -> "Item with ID " + id + " does not exist!"));
 	}
 

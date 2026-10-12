@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -27,6 +26,7 @@ public class DetectorBlock extends Block {
 
 		public Builder(Identifier i) {
 			super(i);
+			unbreakable();
 			detectorId = (id.getNamespace().equals(KubeJS.MOD_ID) ? "" : (id.getNamespace() + ".")) + id.getPath().replace('/', '.');
 
 			if (detectorId.endsWith("_detector")) {
@@ -66,7 +66,7 @@ public class DetectorBlock extends Block {
 	private final Builder builder;
 
 	public DetectorBlock(Builder b) {
-		super(Properties.ofFullCopy(Blocks.BEDROCK));
+		super(b.createProperties());
 		builder = b;
 		registerDefaultState(stateDefinition.any().setValue(BlockStateProperties.POWERED, false));
 	}
