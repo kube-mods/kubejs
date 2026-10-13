@@ -1,6 +1,7 @@
 package dev.latvian.mods.kubejs.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.SDLInputWrapper;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.client.KeyMapping;
