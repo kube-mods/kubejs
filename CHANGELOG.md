@@ -3,6 +3,9 @@
 ## Unreleased
 - /
 
+## [8.0.7] - 2026-10-15
+- /
+
 ## [8.0.6] - 2026-09-09
 
 this release contains the following fixes ported from 1.21:
