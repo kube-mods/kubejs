@@ -34,15 +34,15 @@ public abstract class ResourceKeyMixin implements SpecialEquality {
 	}
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void kjs$getKeyStackTraces(Identifier registryName, Identifier location, CallbackInfo ci) {
-		Scanner.scan(registryName, location);
+	private void kjs$getKeyStackTraces(Identifier registryName, Identifier identifier, CallbackInfo ci) {
+		Scanner.scan(registryName, identifier);
 	}
 
 	@Override
 	public boolean specialEquals(Context cx, @Nullable Object o, boolean shallow) {
 		return switch (o) {
 			case null -> false;
-			case ResourceKey<?> _key -> o == this;
+			case ResourceKey<?> _ -> o == this;
 			case Identifier id -> identifier.equals(id);
 			default -> identifier.toString().equals(o.toString());
 		};

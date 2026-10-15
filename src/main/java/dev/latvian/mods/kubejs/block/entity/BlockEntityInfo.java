@@ -135,7 +135,7 @@ public class BlockEntityInfo implements BlockEntityAttachmentHandler {
 			if (e.getPlayer() instanceof ServerPlayerKJS && e.getBlock().getEntity() instanceof KubeBlockEntity entity && entity.attachments.get(id) instanceof ResourceHandler<?> tank) {
 				@SuppressWarnings("unchecked")
 				var fluidTank = (ResourceHandler<FluidResource>) tank;
-				FluidUtil.interactWithFluidHandler(e.getPlayer(), e.getHand(), e.getBlock().getPos(), fluidTank);
+				FluidUtil.interactWithFluidHandler(e.getPlayer(), e.getHand(), e.getBlock().getPos(), fluidTank, null);
 			}
 		};
 	}

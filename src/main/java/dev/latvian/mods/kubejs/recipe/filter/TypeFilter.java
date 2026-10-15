@@ -1,8 +1,8 @@
 package dev.latvian.mods.kubejs.recipe.filter;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class TypeFilter implements RecipeFilter {

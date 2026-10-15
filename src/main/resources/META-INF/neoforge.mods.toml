@@ -11,7 +11,7 @@ authors = "latvian.dev"
 description = '''
 Customize your modpack or server with JavaScript!
 '''
-logoFile = "kubejs_logo.png"
+iconFile = "kubejs_logo.png"
 modUrl = "https://kubejs.com"
 displayURL = "https://kubejs.com"
 

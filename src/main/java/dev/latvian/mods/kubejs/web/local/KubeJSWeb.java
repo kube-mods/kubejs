@@ -229,7 +229,7 @@ public class KubeJSWeb {
 		if (!logo.isEmpty()) {
 			var resourcePack = ResourcePackLoader.getPackFor(mod.getModId()).orElse(ResourcePackLoader.getPackFor("neoforge").orElseThrow(() -> new InternalError("Can't find neoforge, WHAT!")));
 
-			try (var res = resourcePack.openPrimary(new PackLocationInfo("mod/" + mod.getModId(), Component.empty(), PackSource.BUILT_IN, Optional.empty()))) {
+			try (var res = resourcePack.openMetadata(new PackLocationInfo("mod/" + mod.getModId(), Component.empty(), PackSource.BUILT_IN, Optional.empty()))) {
 				var logoResource = res.getRootResource(logo.split("[/\\\\]"));
 
 				if (logoResource != null) {

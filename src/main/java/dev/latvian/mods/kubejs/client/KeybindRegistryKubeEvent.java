@@ -2,7 +2,7 @@ package dev.latvian.mods.kubejs.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.latvian.mods.kubejs.KubeJS;
-import dev.latvian.mods.kubejs.plugin.builtin.wrapper.GLFWInputWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.SDLInputWrapper;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
@@ -44,7 +44,7 @@ public class KeybindRegistryKubeEvent implements ClientKubeEvent {
 		private final String id;
 		private KeyConflictContext keyConflictContext = KeyConflictContext.UNIVERSAL;
 		private KeyModifier modifier = KeyModifier.NONE;
-		private InputConstants.Type inputType = InputConstants.Type.KEYSYM;
+		private InputConstants.Type inputType = InputConstants.Type.KEYBOARD;
 		private int defaultKey = -1;
 		private KeyMapping.Category category;
 
@@ -77,8 +77,16 @@ public class KeybindRegistryKubeEvent implements ClientKubeEvent {
 			return this;
 		}
 
+		public Builder keyboardInputType() {
+			return inputType(InputConstants.Type.KEYBOARD);
+		}
+
+		/**
+		 * @deprecated <code>InputConstants.Type.SCANCODE</code> was merged into <code>KEYBOARD</code> (keys are SDL scancodes now). Use {@link #keyboardInputType()} instead.
+		 */
+		@Deprecated
 		public Builder scanCodeInputType() {
-			return inputType(InputConstants.Type.SCANCODE);
+			return keyboardInputType();
 		}
 
 		public Builder mouseInputType() {
@@ -86,7 +94,7 @@ public class KeybindRegistryKubeEvent implements ClientKubeEvent {
 		}
 
 		public Builder defaultKey(String keyName) {
-			this.defaultKey = GLFWInputWrapper.get(keyName);
+			this.defaultKey = SDLInputWrapper.get(keyName);
 			return this;
 		}
 

@@ -123,12 +123,12 @@ public class KubeJSClient extends KubeJSCommon {
 
 	@Override
 	public void openErrors(ScriptType type) {
-		runInMainThread(() -> Minecraft.getInstance().setScreen(new KubeJSErrorScreen(null, type.console, true)));
+		runInMainThread(() -> Minecraft.getInstance().gui.setScreen(new KubeJSErrorScreen(null, type.console, true)));
 	}
 
 	@Override
 	public void openErrors(ScriptType type, List<ConsoleLine> errors, List<ConsoleLine> warnings) {
-		runInMainThread(() -> Minecraft.getInstance().setScreen(new KubeJSErrorScreen(null, type, null, errors, warnings, true)));
+		runInMainThread(() -> Minecraft.getInstance().gui.setScreen(new KubeJSErrorScreen(null, type, null, errors, warnings, true)));
 	}
 
 	@Override

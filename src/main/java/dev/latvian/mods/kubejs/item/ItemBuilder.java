@@ -21,8 +21,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.JukeboxSong;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.Compostable;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -46,6 +51,9 @@ public class ItemBuilder extends ModelledBuilderBase<Item> implements ItemBehavi
 	public transient @Nullable FoodBuilder foodBuilder;
 	public transient @Nullable ResourceKey<JukeboxSong> jukeboxSong;
 	public transient final ItemBehavior behavior = new ItemBehavior();
+
+	public transient @Nullable Compostable compostable;
+	public transient @Nullable CookingFuel cookingFuel;
 
 	public transient @Nullable Tool tool;
 	public transient @Nullable ItemAttributeModifiers itemAttributeModifiers;
@@ -152,6 +160,24 @@ public class ItemBuilder extends ModelledBuilderBase<Item> implements ItemBehavi
 	@Info("Sets the item's burn time. Default is 0 (Not a fuel).")
 	public ItemBuilder burnTime(TickDuration v) {
 		burnTime = v.intTicks();
+		return cookingFuel(v);
+	}
+
+	@Info("Sets how many compost layers the item adds when composted.")
+	public ItemBuilder compostable(int layers) {
+		compostable = new Compostable(new ResolvableInt.Constant(layers));
+		return this;
+	}
+
+	@Info("Sets how long the item burns for when used as furnace or campfire fuel. Cooking speed defaults to the vanilla value.")
+	public ItemBuilder cookingFuel(TickDuration burnTime) {
+		cookingFuel = new CookingFuel(new ResolvableInt.Constant(burnTime.intTicks()), ResolvableFloat.fromKey(ContextFloatProviders.COOKING_DEFAULT_SPEED_MULTIPLIER));
+		return this;
+	}
+
+	@Info("Sets how long the item burns for when used as fuel, and how fast cooking goes while one is burning.")
+	public ItemBuilder cookingFuel(TickDuration burnTime, float speedMultiplier) {
+		cookingFuel = new CookingFuel(new ResolvableInt.Constant(burnTime.intTicks()), new ResolvableFloat.Constant(speedMultiplier));
 		return this;
 	}
 
@@ -300,6 +326,14 @@ public class ItemBuilder extends ModelledBuilderBase<Item> implements ItemBehavi
 
 		if (!canRepair) {
 			properties.setNoCombineRepair();
+		}
+
+		if (compostable != null) {
+			properties.component(DataComponents.COMPOSTABLE, compostable);
+		}
+
+		if (cookingFuel != null) {
+			properties.component(DataComponents.COOKING_FUEL, cookingFuel);
 		}
 
 		return properties;

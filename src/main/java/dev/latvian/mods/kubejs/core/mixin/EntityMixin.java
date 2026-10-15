@@ -38,7 +38,7 @@ public abstract class EntityMixin implements EntityKJS {
 	private Level level;
 
 	@Shadow
-	public abstract void playerTouch(Player arg);
+	public abstract void playerTouch(Player player);
 
 	@Unique
 	private @Nullable CompoundTag kjs$persistentData;

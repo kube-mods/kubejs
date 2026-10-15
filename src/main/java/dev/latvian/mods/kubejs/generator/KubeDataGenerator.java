@@ -1,8 +1,6 @@
 package dev.latvian.mods.kubejs.generator;
 
 import dev.latvian.mods.kubejs.script.data.VirtualDataMapFile;
-import dev.latvian.mods.kubejs.util.TickDuration;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -10,15 +8,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.npc.villager.VillagerType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.builtin.BiomeVillagerType;
-import net.neoforged.neoforge.registries.datamaps.builtin.Compostable;
-import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.MonsterRoomMob;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import net.neoforged.neoforge.registries.datamaps.builtin.Oxidizable;
@@ -31,22 +26,6 @@ import java.util.function.Consumer;
 
 public interface KubeDataGenerator extends KubeResourceGenerator {
 	<R, T> void dataMap(DataMapType<R, T> type, Consumer<VirtualDataMapFile<R, T>> consumer);
-
-	default void setCompostable(HolderSet<Item> items, float chance, boolean canVillagerCompost) {
-		dataMap(NeoForgeDataMaps.COMPOSTABLES, callback -> callback.add(items, new Compostable(chance, canVillagerCompost)));
-	}
-
-	default void removeCompostable(HolderSet<Item> items) {
-		dataMap(NeoForgeDataMaps.COMPOSTABLES, callback -> callback.remove(items));
-	}
-
-	default void setFurnaceFuel(HolderSet<Item> items, TickDuration ticks) {
-		dataMap(NeoForgeDataMaps.FURNACE_FUELS, callback -> callback.add(items, new FurnaceFuel(ticks.intTicks())));
-	}
-
-	default void removeFurnaceFuel(HolderSet<Item> items) {
-		dataMap(NeoForgeDataMaps.FURNACE_FUELS, callback -> callback.remove(items));
-	}
 
 	default void setMonsterRoomMobs(EntityType<?> entityType, int weight) {
 		dataMap(NeoForgeDataMaps.MONSTER_ROOM_MOBS, callback -> callback.accept(entityType.kjs$getIdLocation(), new MonsterRoomMob(weight)));

@@ -73,6 +73,10 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 		this.context = new ConditionContext();
 	}
 
+	public <T> Registry<T> registry(ResourceKey<? extends Registry<T>> key) {
+		return lookupOrThrow(key);
+	}
+
 	public Registry<Item> item() {
 		return lookupOrThrow(Registries.ITEM);
 	}
@@ -179,7 +183,6 @@ public final class RegistryAccessContainer extends RegistryOpsContainer implemen
 			return cached != null && cached.lookup().tagMap().containsKey(key.location());
 		}
 
-		@Override
 		public RegistryAccess registryAccess() {
 			return access;
 		}

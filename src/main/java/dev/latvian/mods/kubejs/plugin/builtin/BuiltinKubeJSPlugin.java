@@ -42,11 +42,9 @@ import dev.latvian.mods.kubejs.fluid.FluidTypeBuilder;
 import dev.latvian.mods.kubejs.fluid.FluidWrapper;
 import dev.latvian.mods.kubejs.fluid.ThickFluidBuilder;
 import dev.latvian.mods.kubejs.fluid.ThinFluidBuilder;
-import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
 import dev.latvian.mods.kubejs.holder.HolderWrapper;
 import dev.latvian.mods.kubejs.item.ItemBuilder;
 import dev.latvian.mods.kubejs.item.ItemEnchantmentsWrapper;
-import dev.latvian.mods.kubejs.item.ItemModificationKubeEvent;
 import dev.latvian.mods.kubejs.item.ItemPredicate;
 import dev.latvian.mods.kubejs.item.ItemTintFunction;
 import dev.latvian.mods.kubejs.item.ItemToolMaterials;
@@ -84,7 +82,9 @@ import dev.latvian.mods.kubejs.plugin.builtin.wrapper.DamageSourceWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.DataMapWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.DirectionWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.EntitySelectorWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.FloatWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IngredientWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IntWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.ItemWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.JavaWrapper;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.KMath;
@@ -145,7 +145,6 @@ import dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapelessKubeRecipe;
 import dev.latvian.mods.kubejs.recipe.schema.postprocessing.KeyPatternCleanupPostProcessor;
 import dev.latvian.mods.kubejs.recipe.schema.postprocessing.RecipePostProcessorTypeRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
-import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.DataComponentTypeInfoRegistry;
@@ -182,7 +181,6 @@ import dev.latvian.mods.rhino.type.RecordTypeInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentMap;
@@ -246,10 +244,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorPreset;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
@@ -263,7 +261,8 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -272,8 +271,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
-import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.joml.Matrix3f;
@@ -364,8 +361,8 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 	public void registerServerRegistries(ServerRegistryRegistry registry) {
 		// VanillaRegistries
 		registry.register(Registries.DIMENSION_TYPE, DimensionType.DIRECT_CODEC, DimensionType.class);
-		registry.register(Registries.CONFIGURED_CARVER, ConfiguredWorldCarver.DIRECT_CODEC, TypeInfo.of(ConfiguredWorldCarver.class));
-		registry.register(Registries.CONFIGURED_FEATURE, ConfiguredFeature.DIRECT_CODEC, TypeInfo.of(ConfiguredFeature.class));
+		registry.register(Registries.CARVER, WorldCarver.DIRECT_CODEC, TypeInfo.of(WorldCarver.class));
+		registry.register(Registries.FEATURE, Feature.DIRECT_CODEC, TypeInfo.of(Feature.class));
 		registry.register(Registries.PLACED_FEATURE, PlacedFeature.DIRECT_CODEC, PlacedFeature.class);
 		registry.register(Registries.STRUCTURE, Structure.DIRECT_CODEC, Structure.class);
 		registry.register(Registries.STRUCTURE_SET, StructureSet.DIRECT_CODEC, StructureSet.class);
@@ -373,8 +370,8 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 		registry.register(Registries.TEMPLATE_POOL, StructureTemplatePool.DIRECT_CODEC, StructureTemplatePool.class);
 		registry.register(Registries.BIOME, Biome.DIRECT_CODEC, Biome.class);
 		registry.register(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST, MultiNoiseBiomeSourceParameterList.DIRECT_CODEC, MultiNoiseBiomeSourceParameterList.class);
-		registry.register(Registries.NOISE, NormalNoise.NoiseParameters.DIRECT_CODEC, NormalNoise.NoiseParameters.class);
-		registry.register(Registries.DENSITY_FUNCTION, DensityFunction.DIRECT_CODEC, DensityFunction.class);
+		registry.register(Registries.NOISE, NormalNoise.DIRECT_CODEC, NormalNoise.class);
+		registry.register(Registries.DENSITY_FUNCTION, DensityFunction.CODEC, DensityFunction.class);
 		registry.register(Registries.NOISE_SETTINGS, NoiseGeneratorSettings.DIRECT_CODEC, NoiseGeneratorSettings.class);
 		registry.register(Registries.WORLD_PRESET, WorldPreset.DIRECT_CODEC, WorldPreset.class);
 		registry.register(Registries.FLAT_LEVEL_GENERATOR_PRESET, FlatLevelGeneratorPreset.DIRECT_CODEC, FlatLevelGeneratorPreset.class);
@@ -528,7 +525,8 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 		registry.register(AABB.class, AABBWrapper::wrap);
 		registry.register(IntProvider.class, MiscWrappers::wrapIntProvider);
 		registry.register(FloatProvider.class, MiscWrappers::wrapFloatProvider);
-		registry.register(NumberProvider.class, MiscWrappers::wrapNumberProvider);
+		registry.register(ContextFloatProvider.class, FloatWrapper::wrapContextFloatProvider);
+		registry.register(ContextIntProvider.class, IntWrapper::wrapContextIntProvider);
 		registry.registerEnumFromStringCodec(LootContext.EntityTarget.class, LootContext.EntityTarget.CODEC);
 
 		// No equivalent
@@ -795,7 +793,7 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 
 			if (song != null) {
 				registry.register(item, (registries, stack) -> {
-					var key = Util.makeDescriptionId("jukebox_song", song.song().getKey().identifier());
+					var key = Util.makeDescriptionId("jukebox_song", song.song().key().identifier());
 					return Component.empty().append(stack.getHoverName()).append(": ").append(Component.translatable(key));
 				});
 			}
@@ -824,20 +822,5 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 		registry.register(TextureKubeIcon.TYPE);
 		registry.register(AtlasSpriteKubeIcon.TYPE);
 		registry.register(ItemKubeIcon.TYPE);
-	}
-
-	@Override
-	public void generateData(KubeDataGenerator generator) {
-		generator.dataMap(NeoForgeDataMaps.FURNACE_FUELS, callback -> {
-			for (var entry : ItemModificationKubeEvent.ItemModifications.BURN_TIME_OVERRIDES.reference2IntEntrySet()) {
-				callback.accept(entry.getKey().kjs$getIdLocation(), new FurnaceFuel(entry.getIntValue()));
-			}
-
-			for (var builder : RegistryObjectStorage.ITEM) {
-				if (builder instanceof ItemBuilder item && item.burnTime > 0) {
-					callback.accept(item.id, new FurnaceFuel(item.burnTime));
-				}
-			}
-		});
 	}
 }

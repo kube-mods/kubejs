@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import dev.latvian.mods.kubejs.core.mixin.DataComponentPatchAccessorMixin;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugins;
@@ -81,7 +82,6 @@ public interface DataComponentWrapper {
 		set.add(DataComponents.CUSTOM_MODEL_DATA);
 		set.add(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
 		set.add(DataComponents.DYED_COLOR);
-		set.add(DataComponents.MAP_COLOR);
 		set.add(DataComponents.POTION_CONTENTS);
 		set.add(DataComponents.TRIM);
 		set.add(DataComponents.ENTITY_DATA);
@@ -327,7 +327,7 @@ public interface DataComponentWrapper {
 				if (!errors.isEmpty()) {
 					var joiner = new StringJoiner("; ");
 					errors.forEach((type, error) -> {
-						var id = reg.lookupOrThrow(Registries.DATA_COMPONENT_TYPE).getKeyOrNull(type);
+						var id = reg.registry(Registries.DATA_COMPONENT_TYPE).getKeyOrNull(type);
 						joiner.add("'%s' -> %s".formatted(id, error));
 					});
 					yield error(() -> "Invalid component map format, errored input: [%s]".formatted(joiner.toString()), builder.build());
@@ -368,7 +368,7 @@ public interface DataComponentWrapper {
 				if (!errors.isEmpty()) {
 					var joiner = new StringJoiner("; ");
 					errors.forEach((type, error) -> {
-						var id = reg.lookupOrThrow(Registries.DATA_COMPONENT_TYPE).getKeyOrNull(type);
+						var id = reg.registry(Registries.DATA_COMPONENT_TYPE).getKey(type);
 						joiner.add("'%s' -> %s".formatted(id, error));
 					});
 					yield error(() -> "Invalid component map format, errored input: [%s]".formatted(joiner.toString()), builder.build());
@@ -493,7 +493,9 @@ public interface DataComponentWrapper {
 
 		boolean first = true;
 
-		for (var comp : patch.entrySet()) {
+		var map = ((DataComponentPatchAccessorMixin) (Object) patch).getMap();
+
+		for (var comp : map.entrySet()) {
 			var id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(comp.getKey());
 			var codec = comp.getKey().codec();
 
@@ -507,11 +509,11 @@ public interface DataComponentWrapper {
 				builder.append(',');
 			}
 
-			if (comp.getValue().isPresent()) {
+			if (comp.getValue() != null) {
 				builder.append(ID.reduce(id)).append('=');
 
 				try {
-					var value = codec == Codec.BOOL ? comp.getValue().get() : codec.encodeStart(ops == null ? NbtOps.INSTANCE : ops, Cast.to(comp.getValue().get())).getOrThrow();
+					var value = codec == Codec.BOOL ? comp.getValue() : codec.encodeStart(ops == null ? NbtOps.INSTANCE : ops, Cast.to(comp.getValue())).getOrThrow();
 					builder.append(value);
 				} catch (Throwable ex) {
 					builder.append("ERROR[").append(ex.getMessage()).append("]");
@@ -531,11 +533,11 @@ public interface DataComponentWrapper {
 		}
 
 		var builder = DataComponentPatch.builder();
-
-		for (var entry : patch.entrySet()) {
+		var map = ((DataComponentPatchAccessorMixin) (Object) patch).getMap();
+		for (var entry : map.entrySet()) {
 			if (VISUAL_DIFFERENCE.get().contains(entry.getKey())) {
-				if (entry.getValue().isPresent()) {
-					builder.set(entry.getKey(), Cast.to(entry.getValue().get()));
+				if (entry.getValue() != null) {
+					builder.set(entry.getKey(), Cast.to(entry.getValue()));
 				} else {
 					builder.remove(entry.getKey());
 				}

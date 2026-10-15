@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -184,7 +185,7 @@ public interface LevelKJS extends WithAttachedData<Level>, ScriptTypeHolder, Ent
 	}
 
 	default void kjs$spawnLightning(double x, double y, double z, boolean visualOnly, @Nullable ServerPlayer cause) {
-		var e = EntityType.LIGHTNING_BOLT.create(kjs$self(), EntitySpawnReason.COMMAND);
+		var e = EntityTypes.LIGHTNING_BOLT.create(kjs$self(), EntitySpawnReason.COMMAND);
 		e.snapTo(x, y, z);
 		e.setCause(cause);
 		e.setVisualOnly(visualOnly);

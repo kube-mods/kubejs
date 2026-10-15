@@ -79,16 +79,6 @@ public interface ItemTintFunction {
 		return null;
 	};
 
-	ItemTintFunction MAP = (stack, index) -> {
-		var map = stack.get(DataComponents.MAP_COLOR);
-
-		if (map != null) {
-			return new SimpleColor(map.rgb());
-		}
-
-		return null;
-	};
-
 	ItemTintFunction DISPLAY_COLOR_NBT = (stack, index) -> {
 		var color = stack.get(DataComponents.DYED_COLOR);
 
@@ -122,7 +112,6 @@ public interface ItemTintFunction {
 			case CharSequence cs -> switch (cs.toString()) {
 				case "block" -> BLOCK;
 				case "potion" -> POTION;
-				case "map" -> MAP;
 				case "display_color_nbt" -> DISPLAY_COLOR_NBT;
 				default -> new Fixed(ColorWrapper.wrap(o));
 			};

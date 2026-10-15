@@ -18,19 +18,21 @@ import dev.latvian.mods.rhino.type.TypeInfo;
 import net.minecraft.IdentifierException;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -132,10 +134,6 @@ public interface KubeJSCodecs {
 		return StringUtilsWrapper.getUniqueId(input, o -> toJsonOrThrow(o, codec));
 	}
 
-	static JsonElement numberProviderJson(NumberProvider gen) {
-		return toJsonOrThrow(gen, NumberProviders.CODEC);
-	}
-
 	static <T> Codec<List<T>> listOfOrSelf(Codec<T> codec) {
 		return listOfOrSelf(codec.listOf(), codec);
 	}
@@ -162,8 +160,28 @@ public interface KubeJSCodecs {
 
 	static <T> boolean filter(DataResult<T> result, Predicate<T> ifSuccess, boolean orElse) {
 		return switch (result) {
-			case DataResult.Success<T>(var obj, var lifecycle) -> ifSuccess.test(obj);
-			case DataResult.Error<T> error -> orElse;
+			case DataResult.Success<T>(var obj, _) -> ifSuccess.test(obj);
+			case DataResult.Error<T> _ -> orElse;
 		};
+	}
+
+	static <T> List<T> readList(FriendlyByteBuf buf, Function<? super FriendlyByteBuf, T> reader) {
+		int size = buf.readVarInt();
+		// See https://neoforged.net/news/mitigating-vulnerabilities-network/
+		var out = new ArrayList<T>(Math.min(size, 1024));
+
+		for (int i = 0; i < size; i++) {
+			out.add(reader.apply(buf));
+		}
+
+		return out;
+	}
+
+	static <T> void writeCollection(FriendlyByteBuf buf, Collection<T> collection, BiConsumer<? super FriendlyByteBuf, T> writer) {
+		buf.writeVarInt(collection.size());
+
+		for (T t : collection) {
+			writer.accept(buf, t);
+		}
 	}
 }

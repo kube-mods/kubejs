@@ -11,7 +11,7 @@ public abstract class IdentifierMixin implements SpecialEquality {
 	@Override
 	public boolean specialEquals(Context cx, @Nullable Object o, boolean shallow) {
 		return switch (o) {
-			case Identifier _id -> equals(o);
+			case Identifier _ -> equals(o);
 			case null, default -> toString().equals(String.valueOf(o));
 		};
 	}

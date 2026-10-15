@@ -7,6 +7,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
@@ -69,7 +70,7 @@ public class AttributeBuilder extends BuilderBase<Attribute> {
 	}
 
 	public AttributeBuilder attachToPlayers() {
-		predicateList.add(entityType -> entityType == EntityType.PLAYER);
+		predicateList.add(entityType -> entityType == EntityTypes.PLAYER);
 		return this;
 	}
 

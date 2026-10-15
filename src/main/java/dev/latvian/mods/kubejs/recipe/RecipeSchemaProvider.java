@@ -52,7 +52,7 @@ public abstract class RecipeSchemaProvider implements DataProvider {
 	}
 
 	public RecipeSchemaProvider(String name, GatherDataEvent event, RegistryAccessContainer registryAccessContainer) {
-		this.lookupProvider = event.getLookupProvider();
+		this.lookupProvider = event.getReloadableLookupProvider();
 		this.name = name;
 		this.registryAccessContainer = registryAccessContainer;
 		path = event.getGenerator().getPackOutput().createPathProvider(PackOutput.Target.DATA_PACK, "kubejs/recipe_schema");

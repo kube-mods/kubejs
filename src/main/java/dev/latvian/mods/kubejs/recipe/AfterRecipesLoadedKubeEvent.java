@@ -98,11 +98,10 @@ public class AfterRecipesLoadedKubeEvent implements KubeEvent {
 	@Override
 	public void afterPosted(EventResult result) {
 		if (changed) {
-			var holders = new ArrayList<RecipeHolder<?>>();
-			for (var r : getOriginalRecipes()) {
-				holders.add((RecipeHolder<?>) r);
-			}
-			recipeManager.kjs$replaceRecipes(RecipeMap.create(holders));
+			var holders = getOriginalRecipes().stream()
+				.<RecipeHolder<?>>map(r -> (RecipeHolder<?>) r)
+				.toList();
+			recipeManager.kjs$replaceRecipes(RecipeMap.createClient(holders));
 		}
 	}
 }

@@ -12,7 +12,7 @@ public record RegistryRegExpPredicate<T>(Pattern pattern) implements RegistryPre
 			if (holder instanceof Holder.Reference<T> ref) {
 				return pattern.matcher(ref.key().identifier().toString()).find();
 			} else {
-				return pattern.matcher(holder.getKey().identifier().toString()).find();
+				return pattern.matcher(holder.key().identifier().toString()).find();
 			}
 		} catch (Exception ex) {
 			return false;

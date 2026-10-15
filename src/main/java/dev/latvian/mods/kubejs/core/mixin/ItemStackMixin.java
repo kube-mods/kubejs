@@ -44,12 +44,6 @@ public abstract class ItemStackMixin implements ItemStackKJS {
 	@HideFromJS
 	public abstract Holder<Item> typeHolder();
 
-	// Moved to ExtraCodecsMixin which should now intercept globally
-	/*@ModifyConstant(method = "lambda$static$3", constant = @Constant(intValue = 99))
-	private static int kjs$maxSlotSize(int original) {
-		return CommonProperties.get().getMaxSlotSize(original);
-	}*/
-
 	@Override
 	public void kjs$resetComponents(Context cx) {
 		components.restorePatch(DataComponentPatch.EMPTY);

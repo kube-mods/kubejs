@@ -147,34 +147,6 @@ public class ServerScriptManager extends ScriptManager {
 		KubeJSPlugins.forEachPlugin(internalDataPack, KubeJSPlugin::generateData);
 		internalDataPack.flush();
 
-		/*
-		var furnaceFuelsJson = new JsonObject();
-
-		for (var entry : ItemModificationKubeEvent.ItemModifications.BURN_TIME_OVERRIDES.entrySet()) {
-			var json = new JsonObject();
-			json.addProperty("burn_time", entry.getValue());
-			furnaceFuelsJson.add(entry.getKey().kjs$getId(), json);
-		}
-
-		for (var builder : RegistryObjectStorage.ITEM) {
-			if (builder instanceof ItemBuilder item) {
-				int b = item.burnTime;
-
-				if (b > 0) {
-					var json = new JsonObject();
-					json.addProperty("burn_time", b);
-					furnaceFuelsJson.add(builder.id.toString(), json);
-				}
-			}
-		}
-
-		if (furnaceFuelsJson.size() > 0) {
-			var json = new JsonObject();
-			json.add("values", furnaceFuelsJson);
-			internalDataPack.json(Identifier.fromNamespaceAndPath("neoforge", "data_maps/item/furnace_fuels.json"), json);
-		}
-		 */
-
 		if (firstLoad) {
 			firstLoad = false;
 
@@ -199,7 +171,7 @@ public class ServerScriptManager extends ScriptManager {
 
 					@Override
 					public Stream<RegistryEntry<?>> registries() {
-						return current.registries();
+						return Stream.empty();
 					}
 				});
 
@@ -207,12 +179,12 @@ public class ServerScriptManager extends ScriptManager {
 
 				var codecs = new Reference2ObjectOpenHashMap<ResourceKey<?>, Codec<?>>();
 
-				for (var reg : DataPackRegistriesHooks.getDataPackRegistries()) {
+				for (var reg : DataPackRegistriesHooks.getReloadableRegistries()) {
 					var key = (ResourceKey) reg.key();
 					codecs.put(key, reg.elementCodec());
 
 					if (ServerEvents.REGISTRY.hasListeners(key)) {
-						ServerEvents.REGISTRY.post(ScriptType.SERVER, key, new ServerRegistryKubeEvent(key, ops, reg.elementCodec(), builders));
+						ServerEvents.REGISTRY.post(ScriptType.SERVER, key, new ServerRegistryKubeEvent<>(key, ops, reg.elementCodec(), builders));
 					}
 				}
 

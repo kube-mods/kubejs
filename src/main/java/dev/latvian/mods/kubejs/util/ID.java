@@ -81,7 +81,7 @@ public interface ID {
 			case null -> null;
 			case Identifier id -> id;
 			case ResourceKey<?> key -> key.identifier();
-			case Holder<?> holder -> holder.getKey().identifier();
+			case Holder<?> holder -> holder.key().identifier();
 			case RegistryObjectKJS<?> key -> key.kjs$getIdLocation();
 			default -> {
 				var s = o instanceof JsonPrimitive p ? p.getAsString() : o.toString();
