@@ -1,0 +1,17 @@
+{
+	"plugins": [
+		{
+			"class": "dev.latvian.mods.kubejs.plugin.builtin.BuiltinKubeJSPlugin"
+		},
+		{
+			"id": "client",
+			"class": "dev.latvian.mods.kubejs.plugin.builtin.BuiltinKubeJSClientPlugin",
+			"client_only": true
+		},
+		{
+			"id": "architectury",
+			"class": "dev.latvian.mods.kubejs.integration.architectury.ArchitecturyIntegration",
+			"required_mods": ["architectury"]
+		}
+	]
+}

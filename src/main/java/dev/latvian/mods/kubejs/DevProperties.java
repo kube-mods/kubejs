@@ -37,6 +37,7 @@ public class DevProperties extends BaseProperties {
 	public boolean logErroringParsedRecipes;
 	public boolean logInvalidRecipeHandlers;
 	public boolean logSkippedPlugins;
+	public boolean logErroringPlugins;
 	public boolean logGeneratedData;
 	public boolean logEventErrorStackTrace;
 	public boolean logChangesInChat;
@@ -65,6 +66,7 @@ public class DevProperties extends BaseProperties {
 		logErroringParsedRecipes = get("log_erroring_parsed_recipes", false);
 		logInvalidRecipeHandlers = get("log_invalid_recipe_handlers", true);
 		logSkippedPlugins = get("log_skipped_plugins", true);
+		logErroringPlugins = get("log_erroring_plugins", true);
 		logGeneratedData = get("log_generated_data", false);
 		logEventErrorStackTrace = get("log_event_error_stack_trace", false);
 		logChangesInChat = get("log_changes_in_chat", false);
