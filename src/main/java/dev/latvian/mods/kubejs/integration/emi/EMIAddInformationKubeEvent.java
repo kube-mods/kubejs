@@ -1,5 +1,4 @@
 package dev.latvian.mods.kubejs.integration.emi;
-/*
 
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiInfoRecipe;
@@ -33,4 +32,3 @@ public class EMIAddInformationKubeEvent implements AddInformationKubeEvent {
 		}
 	}
 }
-*/

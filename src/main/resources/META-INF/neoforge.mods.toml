@@ -46,7 +46,7 @@ side = "CLIENT"
 [[dependencies.kubejs]]
 modId = "emi"
 type = "optional"
-versionRange = "[{emiVersion},)"
+versionRange = "${emiVersionRange}"
 ordering = "AFTER"
 side = "CLIENT"
 

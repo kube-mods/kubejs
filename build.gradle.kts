@@ -53,6 +53,7 @@ val rhinoVersion: String by project
 val tinyServerVersion: String by project
 val gifLibVersion: String by project
 val batVersion: String by project
+val emiVersion: String by project
 
 println("Building version: ${project.version}")
 
@@ -93,6 +94,18 @@ repositories {
 			includeGroup("com.github.rtyley")
 		}
 	}
+	// SEMI (Seasonal EMI): EMI ported to 26.3, keeps EMI's API and the "emi" mod id
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "SEMI maven"
+				setUrl("https://raw.githubusercontent.com/Pandaismyname1/SEMI/maven")
+			}
+		}
+		filter {
+			includeGroup("dev.emi")
+		}
+	}
 	mavenCentral()
 }
 
@@ -105,8 +118,9 @@ dependencies {
 		}
 	}
 
-	// not updated to 26.1 yet
+	// not updated to 26.3 yet?
 	/*compileOnly("dev.architectury:architectury-neoforge:$archVersion")*/
+	compileOnly("dev.emi:semi-neoforge:$emiVersion:api")
 
 	jarJar(implementation("dev.latvian.apps:tiny-java-server") {
 		version {
