@@ -590,7 +590,7 @@ public class BuiltinKubeJSPlugin implements KubeJSPlugin {
 		registry.registerAlias(CustomModelData.class, TypeInfo.PRIMITIVE_INT, (Integer i) ->
 			new CustomModelData(List.of(), List.of(), List.of(), List.of(i))
 		);
-		registry.registerAlias(LockCode.class, TypeInfo.STRING, LockCode::new);
+		registry.registerAlias(LockCode.class, ItemPredicate.TYPE_INFO, LockCode::new);
 		registry.registerAlias(BlockItemStateProperties.class, TypeInfo.RAW_MAP.withParams(TypeInfo.STRING, TypeInfo.STRING), BlockItemStateProperties::new);
 
 		registry.registerAlias(ItemResource.class, ItemStack.class, ItemResource::of);

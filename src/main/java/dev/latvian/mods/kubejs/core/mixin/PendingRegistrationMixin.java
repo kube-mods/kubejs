@@ -40,12 +40,11 @@ public abstract class PendingRegistrationMixin {
 	@Inject(method = "loadFromResource", at = @At("RETURN"))
 	private static <T> void kjs$report(Decoder<T> elementDecoder, RegistryOps<JsonElement> ops, ResourceKey<T> elementKey, Resource thunk, CallbackInfoReturnable<Either<T, Exception>> cir) {
 		var json = KJS$JSON.get();
-		if (json == null || !elementKey.isFor(Registries.RECIPE) || !RecipesKubeEvent.INSTANCE.isBound()) {
-			return;
-		}
+		var event = RecipesKubeEvent.INSTANCE.isBound() ? RecipesKubeEvent.INSTANCE.get() : RecipesKubeEvent.PARSING;
+		if (json == null || !elementKey.isFor(Registries.RECIPE) || event == null) return;
 
 		cir.getReturnValue().right()
 			.filter(IllegalStateException.class::isInstance)
-			.ifPresent(ex -> RecipesKubeEvent.INSTANCE.get().handleFailedRecipe(elementKey.identifier(), json, ex));
+			.ifPresent(ex -> event.handleFailedRecipe(elementKey.identifier(), json, ex));
 	}
 }

@@ -5,13 +5,8 @@ import dev.latvian.mods.kubejs.core.RecipeManagerKJS;
 import dev.latvian.mods.kubejs.core.ReloadableServerResourcesKJS;
 import dev.latvian.mods.kubejs.net.KubeServerData;
 import dev.latvian.mods.kubejs.net.SyncServerDataPayload;
-import dev.latvian.mods.kubejs.plugin.builtin.event.ServerEvents;
-import dev.latvian.mods.kubejs.recipe.special.SpecialRecipeSerializerManager;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.server.ServerScriptManager;
-import dev.latvian.mods.kubejs.util.Cast;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -28,7 +23,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
-import java.util.Objects;
 
 @Mixin(value = RecipeManager.class, priority = 1100)
 public abstract class RecipeManagerMixin implements RecipeManagerKJS {
@@ -49,35 +43,6 @@ public abstract class RecipeManagerMixin implements RecipeManagerKJS {
 
 	@Unique
 	private @Nullable ReloadableServerResourcesKJS kjs$resources;
-
-	@Unique
-	public void kjs$preRecipeLoad(net.minecraft.server.packs.resources.ResourceManager manager) {
-		if (kjs$resources == null) {
-			return;
-		}
-
-		var ssm = Objects.requireNonNull(kjs$resources.kjs$getServerScriptManager());
-
-		// TODO: i would like to be able to live without these two calls
-		for (var pending : kjs$resources.kjs$getPostponedTags()) {
-			pending.apply();
-		}
-
-		for (var pending : kjs$resources.kjs$getNewComponents()) {
-			pending.apply();
-		}
-
-		for (var entry : ssm.getRegistries().cachedRegistryTags.values()) {
-			if (entry.registry() instanceof MappedRegistry<?> mappedRegistry) {
-				mappedRegistry.bindTags(Cast.to(entry.lookup().bindingMap()));
-			}
-		}
-
-		ssm.recipeSchemaStorage.fireEvents(ssm.getRegistries(), manager);
-
-		SpecialRecipeSerializerManager.INSTANCE.reset();
-		ServerEvents.SPECIAL_RECIPES.post(ScriptType.SERVER, SpecialRecipeSerializerManager.INSTANCE);
-	}
 
 	@Inject(method = "finalizeRecipeLoading", at = @At("TAIL"))
 	private void kjs$finalizeTail(FeatureFlagSet enabledFlags, CallbackInfo ci) {

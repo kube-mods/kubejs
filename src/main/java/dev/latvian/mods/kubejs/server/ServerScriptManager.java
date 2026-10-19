@@ -29,12 +29,12 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.registries.DataPackRegistriesHooks;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -179,7 +179,9 @@ public class ServerScriptManager extends ScriptManager {
 
 				var codecs = new Reference2ObjectOpenHashMap<ResourceKey<?>, Codec<?>>();
 
-				for (var reg : DataPackRegistriesHooks.getReloadableRegistries()) {
+				// NeoForge after 26.3.0.76 removed DataPackRegistriesHooks#getDataPackRegistries/#getReloadableRegistries;
+				// the vanilla lists now hold the modded entries too. World registries keep worldgen/damage types etc. scriptable.
+				for (var reg : Stream.concat(RegistryDataLoader.WORLD_REGISTRIES.stream(), RegistryDataLoader.RELOADABLE_REGISTRIES.stream()).toList()) {
 					var key = (ResourceKey) reg.key();
 					codecs.put(key, reg.elementCodec());
 

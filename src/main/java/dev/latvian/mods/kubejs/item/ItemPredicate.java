@@ -22,8 +22,8 @@ import java.util.function.Predicate;
 @RemapPrefixForJS("kjs$")
 public interface ItemPredicate extends Predicate<ItemStack>, IngredientSupplierKJS {
 	TypeInfo TYPE_INFO = TypeInfo.of(ItemPredicate.class);
-	ItemPredicate NONE = stack -> false;
-	ItemPredicate ALL = stack -> true;
+	ItemPredicate NONE = _ -> false;
+	ItemPredicate ALL = _ -> true;
 
 	static ItemPredicate wrap(Context cx, @Nullable Object from) {
 		if (from == null) {
