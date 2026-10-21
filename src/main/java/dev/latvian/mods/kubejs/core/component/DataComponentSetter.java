@@ -1,5 +1,6 @@
 package dev.latvian.mods.kubejs.core.component;
 
+import dev.latvian.mods.kubejs.core.mixin.DataComponentPatchAccessorMixin;
 import dev.latvian.mods.kubejs.util.Cast;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
@@ -35,9 +36,11 @@ public interface DataComponentSetter {
 	}
 
 	default void kjs$patch(DataComponentPatch components) {
-		for (var entry : components.entrySet()) {
+		var map = ((DataComponentPatchAccessorMixin) (Object) components).getMap();
+
+		for (var entry : map.entrySet()) {
 			DataComponentType<?> key = entry.getKey();
-			Object value = entry.getValue().orElse(null);
+			Object value = entry.getValue();
 
 			kjs$override(Cast.to(key), Cast.to(value));
 		}

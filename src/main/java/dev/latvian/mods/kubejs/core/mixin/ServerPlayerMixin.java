@@ -30,5 +30,5 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerKJ
 	@Info(value = "Changes the player's gamemode.", params = {
 		@Param(name = "gameMode", value = "One of: `'survival'`, `'creative'`, `'adventure'`, `'spectator'`.")
 	})
-	public abstract boolean setGameMode(GameType gameMode);
+	public abstract boolean setGameMode(GameType mode);
 }

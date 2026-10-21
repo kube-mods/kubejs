@@ -22,9 +22,6 @@ import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -48,12 +45,6 @@ public interface MiscWrappers {
 	static FloatProvider wrapFloatProvider(Context cx, @Nullable Object o) {
 		return tryWrapFloatProvider(cx, o)
 			.getOrThrow(error -> new KubeRuntimeException("Failed to read FloatProvider from %s: %s".formatted(o, error))
-				.source(SourceLine.of(cx)));
-	}
-
-	static NumberProvider wrapNumberProvider(Context cx, @Nullable Object o) {
-		return tryWrapNumberProvider(cx, o)
-			.getOrThrow(error -> new KubeRuntimeException("Failed to read NumberProvider from %s: %s".formatted(o, error))
 				.source(SourceLine.of(cx)));
 	}
 
@@ -126,23 +117,6 @@ public interface MiscWrappers {
 		};
 	}
 
-	private static DataResult<NumberProvider> tryWrapNumberProvider(Context cx, @Nullable Object o) {
-		return switch (o) {
-			case Number n -> {
-				var f = n.floatValue();
-				yield success(UniformGenerator.between(f, f));
-			}
-			case List<?> list -> switch (list.size()) {
-				case 0 -> error(() -> "list cannot be empty");
-				case 1 -> tryParseFloat(list.get(0)).map(v -> UniformGenerator.between(v, v));
-				case 2 -> tryParseFloat(list.get(0)).apply2(UniformGenerator::between, tryParseFloat(list.get(1)));
-				default -> error(() -> "list can contain at most 2 numbers");
-			};
-			case Map<?, ?> map -> numberProviderFromMap(cx, Cast.to(map));
-			case null, default -> error(() -> "Expected a number, list of numbers, or a supported map format");
-		};
-	}
-
 	private static DataResult<UniformInt> parseIntBounds(Map<String, Object> m) {
 		if (m.get("bounds") instanceof List<?> bounds) {
 			if (bounds.size() < 2) {
@@ -189,18 +163,6 @@ public interface MiscWrappers {
 		} else {
 			return IntProviders.CODEC.parse(RegistryAccessContainer.of(cx).nbt(), NBTWrapper.wrapCompound(cx, m)).map(v -> v).mapError(error -> "Failed to decode IntProvider from %s: %s".formatted(m, error));
 		}
-	}
-
-	private static DataResult<NumberProvider> numberProviderFromMap(Context cx, Map<String, Object> m) {
-		if (m.containsKey("min") && m.containsKey("max")) {
-			return tryParseInt(m.get("min")).apply2(UniformGenerator::between, tryParseFloat(m.get("max")));
-		} else if (m.containsKey("n") && m.containsKey("p")) {
-			return tryParseInt(m.get("n")).apply2(BinomialDistributionGenerator::binomial, tryParseFloat(m.get("p")));
-		} else if (m.containsKey("value")) {
-			return tryParseFloat(m.get("value")).map(f -> UniformGenerator.between(f, f));
-		}
-
-		return error(() -> "Invalid NumberProvider map %s. Expected {min,max}, {n,p}, or {value}.".formatted(m));
 	}
 
 	private static DataResult<FloatProvider> floatProviderFromMap(Context cx, Map<String, Object> m) {

@@ -64,7 +64,7 @@ public interface HolderWrapper {
 		}
 
 		//noinspection DataFlowIssue
-		return Holder.Reference.createStandAlone(Cast.to(cx.lookupRegistry(param, from)), h.getKey()); // Only null with direct holders
+		return Holder.Reference.createStandAlone(Cast.to(cx.lookupRegistry(param, from)), h.key()); // Only null with direct holders
 	}
 
 	static HolderSet<?> wrapSet(KubeJSContext cx, Object from, TypeInfo param) {

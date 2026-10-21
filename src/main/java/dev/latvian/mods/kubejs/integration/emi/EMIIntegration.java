@@ -1,5 +1,4 @@
 package dev.latvian.mods.kubejs.integration.emi;
-/*
 
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -32,4 +31,3 @@ public class EMIIntegration {
 		return set::contains;
 	}
 }
-*/

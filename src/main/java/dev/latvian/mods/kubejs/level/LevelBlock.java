@@ -351,7 +351,7 @@ public interface LevelBlock extends BlockProviderKJS {
 	}
 
 	default Identifier getBiomeId() {
-		var k = getLevel().getBiome(getPos()).getKey();
+		var k = getLevel().getBiome(getPos()).key();
 		return k == null ? Biomes.PLAINS.identifier() : k.identifier();
 	}
 

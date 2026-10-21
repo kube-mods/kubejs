@@ -18,7 +18,7 @@ public interface ColorWrapper {
 	Map<String, KubeColor> MAP = new HashMap<>();
 	Map<String, ChatFormatting> TEXT = Util.make(new HashMap<>(), map -> {
 		for (ChatFormatting c : ChatFormatting.values()) {
-			map.put(c.getName(), c);
+			map.put(c.name(), c);
 		}
 	});
 	Map<String, DyeColor> DYE = Util.make(new HashMap<>(), map -> {
@@ -107,6 +107,4 @@ public interface ColorWrapper {
 	KubeColor GREEN_DYE = createMapped(DyeColor.GREEN, "GREEN_DYE", "green_dye", "greenDye");
 	KubeColor RED_DYE = createMapped(DyeColor.RED, "RED_DYE", "red_dye", "redDye");
 	KubeColor BLACK_DYE = createMapped(DyeColor.BLACK, "BLACK_DYE", "black_dye", "blackDye");
-
-
 }

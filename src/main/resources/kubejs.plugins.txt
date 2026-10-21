@@ -1,3 +1,5 @@
 dev.latvian.mods.kubejs.plugin.builtin.BuiltinKubeJSPlugin
 dev.latvian.mods.kubejs.plugin.builtin.BuiltinKubeJSClientPlugin client
-dev.latvian.mods.kubejs.integration.architectury.ArchitecturyIntegration architectury
+# The Architectury integration is commented out (not updated since 26.1). Its class is not in the jar, so with
+# Architectury API installed this line made KubeJS log a ClassNotFoundException at startup.
+# dev.latvian.mods.kubejs.integration.architectury.ArchitecturyIntegration architectury

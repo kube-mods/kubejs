@@ -71,10 +71,14 @@ import java.util.stream.Stream;
 
 public class RecipesKubeEvent implements KubeEvent {
 	public static final ScopedValue<RecipesKubeEvent> INSTANCE = ScopedValue.newInstance();
+	/// The event whose recipes are being parsed on the reloadable registry loader's worker threads, where [#INSTANCE] is not bound (26.3+)
+	@HideFromJS
+	@ApiStatus.Internal
+	public static volatile @Nullable RecipesKubeEvent PARSING;
 
 	public static final Pattern POST_SKIP_ERROR = ConsoleJS.methodPattern(RecipesKubeEvent.class, "post");
 	public static final Pattern CREATE_RECIPE_SKIP_ERROR = ConsoleJS.methodPattern(RecipesKubeEvent.class, "createRecipe");
-	private static final Predicate<KubeRecipe> RECIPE_NOT_REMOVED = r -> r != null && !r.removed;
+	private static final Predicate<KubeRecipe> RECIPE_NOT_REMOVED = r -> !r.removed;
 	private static final Predicate<KubeRecipe> RECIPE_IS_SYNTHETIC = r -> !r.newRecipe;
 
 	private final Stopwatch overallTimer;

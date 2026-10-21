@@ -8,7 +8,7 @@ import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.plugin.builtin.event.ClientEvents;
 import dev.latvian.mods.kubejs.plugin.builtin.event.KeyBindEvents;
-import dev.latvian.mods.kubejs.plugin.builtin.wrapper.GLFWInputWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.SDLInputWrapper;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.PlatformWrapper;
 import dev.latvian.mods.kubejs.script.ScriptManager;
@@ -40,7 +40,7 @@ public class BuiltinKubeJSClientPlugin implements KubeJSPlugin {
 			bindings.add("setInterval", new ScheduledEvents.TimeoutJSFunction(se, false, true));
 			bindings.add("clearInterval", new ScheduledEvents.TimeoutJSFunction(se, true, true));
 		}
-		bindings.add("GLFWInput", GLFWInputWrapper.MAP.get());
+		bindings.add("SDLInput", SDLInputWrapper.MAP.get());
 	}
 
 	@Override

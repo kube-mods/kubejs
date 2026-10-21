@@ -3,12 +3,12 @@ package dev.latvian.mods.kubejs.block.custom;
 import dev.latvian.mods.kubejs.block.BlockBuilder;
 import dev.latvian.mods.kubejs.block.BlockRightClickedKubeEvent;
 import dev.latvian.mods.kubejs.block.KubeJSBlockProperties;
-import dev.latvian.mods.kubejs.block.callback.AfterEntityFallenOnBlockCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockExplodedCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateMirrorCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateModifyCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateModifyPlacementCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateRotateCallback;
+import dev.latvian.mods.kubejs.block.callback.BounceRestitutionCallback;
 import dev.latvian.mods.kubejs.block.callback.CanBeReplacedCallback;
 import dev.latvian.mods.kubejs.block.callback.EntityBlockCallback;
 import dev.latvian.mods.kubejs.block.callback.EntityFallenOnBlockCallback;
@@ -289,18 +289,19 @@ public class BasicKubeBlock extends Block implements SimpleWaterloggedBlock {
 		}
 	}
 
+
 	@Override
-	public void updateEntityMovementAfterFallOn(BlockGetter level, Entity entity) {
-		if (blockBuilder.afterFallenOnCallback != null) {
-			var callbackJS = new AfterEntityFallenOnBlockCallback(level, entity);
-			safeCallback(entity, blockBuilder.afterFallenOnCallback, callbackJS, "Error while bouncing entity from custom block ");
-			// if they did not change the entity's velocity, then use the default method to reset the velocity.
-			if (!callbackJS.hasChangedVelocity()) {
-				super.updateEntityMovementAfterFallOn(level, entity);
+	public float getBounceRestitution(Level level, BlockPos pos, BlockState blockState, Entity entity) {
+		float base = super.getBounceRestitution(level, pos, blockState, entity);
+
+		if (blockBuilder.bounceRestitutionCallback != null) {
+			var callbackJS = new BounceRestitutionCallback(level, pos, blockState, entity, base);
+			if (safeCallback(level, blockBuilder.bounceRestitutionCallback, callbackJS, "Error while calculating bounce restitution of custom block " + blockBuilder.id)) {
+				return callbackJS.getRestitution();
 			}
-		} else {
-			super.updateEntityMovementAfterFallOn(level, entity);
 		}
+
+		return base;
 	}
 
 	@Override

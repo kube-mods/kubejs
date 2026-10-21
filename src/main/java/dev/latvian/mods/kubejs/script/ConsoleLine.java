@@ -3,6 +3,7 @@ package dev.latvian.mods.kubejs.script;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.latvian.mods.kubejs.codec.KubeJSCodecs;
 import dev.latvian.mods.kubejs.util.LogType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,8 +28,8 @@ public class ConsoleLine implements Supplier<JsonElement> {
 			var line = new ConsoleLine(console, timestamp, message);
 			line.type = LogType.VALUES[buf.readByte()];
 			line.group = "";
-			line.sourceLines = buf.readList(SourceLine::read);
-			line.stackTrace = buf.readList(FriendlyByteBuf::readUtf);
+			line.sourceLines = KubeJSCodecs.readList(buf, SourceLine::read);
+			line.stackTrace = KubeJSCodecs.readList(buf, FriendlyByteBuf::readUtf);
 			return line;
 		}
 
@@ -38,8 +39,8 @@ public class ConsoleLine implements Supplier<JsonElement> {
 			buf.writeVarLong(line.timestamp);
 			buf.writeUtf(line.message);
 			buf.writeByte(line.type.ordinal());
-			buf.writeCollection(line.sourceLines, SourceLine::write);
-			buf.writeCollection(line.stackTrace, FriendlyByteBuf::writeUtf);
+			KubeJSCodecs.writeCollection(buf, line.sourceLines, SourceLine::write);
+			KubeJSCodecs.writeCollection(buf, line.stackTrace, FriendlyByteBuf::writeUtf);
 		}
 	};
 

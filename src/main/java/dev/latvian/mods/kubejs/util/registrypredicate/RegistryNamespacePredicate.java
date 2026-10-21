@@ -8,7 +8,7 @@ public record RegistryNamespacePredicate<T>(String namespace) implements Registr
 		if (holder instanceof Holder.Reference<T> ref) {
 			return ref.key().identifier().getNamespace().equals(namespace);
 		} else {
-			return holder.getKey().identifier().getNamespace().equals(namespace);
+			return holder.key().identifier().getNamespace().equals(namespace);
 		}
 	}
 

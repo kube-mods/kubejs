@@ -34,9 +34,9 @@ public abstract class BlockBehaviourMixin implements BlockBehaviourKJS {
 	}
 
 	@Inject(method = "randomTick", at = @At("HEAD"), cancellable = true)
-	private void onRandomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource, CallbackInfo ci) {
+	private void onRandomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random, CallbackInfo ci) {
 		if (kjs$randomTickCallback != null) {
-			kjs$randomTickCallback.accept(new RandomTickCallback(serverLevel.kjs$getBlock(blockPos).cache(blockState), randomSource));
+			kjs$randomTickCallback.accept(new RandomTickCallback(level.kjs$getBlock(pos).cache(state), random));
 			ci.cancel();
 		}
 	}

@@ -1,5 +1,4 @@
 package dev.latvian.mods.kubejs.integration.emi;
-/*
 
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -27,7 +26,7 @@ public class KubeJSEMIPlugin implements EmiPlugin {
 		var remote = sessionData == null ? null : sessionData.recipeViewerData;
 
 		if (RecipeViewerEvents.REMOVE_CATEGORIES.hasListeners()) {
-			var removedCategories = new HashSet<ResourceLocation>();
+			var removedCategories = new HashSet<Identifier>();
 			RecipeViewerEvents.REMOVE_CATEGORIES.post(ScriptType.CLIENT, new EMIRemoveCategoriesKubeEvent(removedCategories));
 
 			if (!removedCategories.isEmpty()) {
@@ -126,4 +125,3 @@ public class KubeJSEMIPlugin implements EmiPlugin {
 		}
 	}
 }
-*/

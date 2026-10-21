@@ -35,6 +35,11 @@ public record MovedVertexConsumer(VertexConsumer parent, PoseStack.Pose pose) im
 	}
 
 	@Override
+	public VertexConsumer setUv3(float v, float v1) {
+		return this.parent.setUv3(v, v1);
+	}
+
+	@Override
 	public VertexConsumer setNormal(float normalX, float normalY, float normalZ) {
 		return parent.setNormal(pose, normalX, normalY, normalZ);
 	}

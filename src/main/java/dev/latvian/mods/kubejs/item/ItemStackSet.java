@@ -7,9 +7,8 @@ import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;

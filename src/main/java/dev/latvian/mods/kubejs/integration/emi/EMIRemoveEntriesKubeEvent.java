@@ -1,5 +1,4 @@
 package dev.latvian.mods.kubejs.integration.emi;
-/*
 
 import dev.emi.emi.api.EmiRegistry;
 import dev.latvian.mods.kubejs.item.ItemPredicate;
@@ -28,4 +27,3 @@ public class EMIRemoveEntriesKubeEvent implements RemoveEntriesKubeEvent {
 		}
 	}
 }
-*/

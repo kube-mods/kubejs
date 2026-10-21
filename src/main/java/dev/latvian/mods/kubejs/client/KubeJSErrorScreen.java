@@ -7,6 +7,7 @@ import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ConsoleLine;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.LogType;
+import dev.latvian.mods.kubejs.util.PlatformUtil;
 import dev.latvian.mods.kubejs.util.TimeJS;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -20,7 +21,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Util;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
 
@@ -107,7 +107,7 @@ public class KubeJSErrorScreen extends Screen {
 
 	private void report(Button button) {
 		try {
-			Util.getPlatform().openUri(URI.create(CommonProperties.get().startupErrorReportUrl));
+			PlatformUtil.openUri(URI.create(CommonProperties.get().startupErrorReportUrl));
 		} catch (Exception ignored) {
 		}
 	}
@@ -115,7 +115,7 @@ public class KubeJSErrorScreen extends Screen {
 	private void openLog(Button button) {
 		if (logFile != null) {
 			try {
-				Util.getPlatform().openFile(logFile.toAbsolutePath().toFile());
+				PlatformUtil.openFile(logFile.toAbsolutePath().toFile());
 			} catch (Exception ignored) {
 			}
 		}
@@ -165,7 +165,7 @@ public class KubeJSErrorScreen extends Screen {
 				}
 
 				return new Vector2i(px, py);
-			}, null);
+			}, null, false);
 
 		}
 
@@ -179,7 +179,7 @@ public class KubeJSErrorScreen extends Screen {
 
 	@Override
 	public void onClose() {
-		minecraft.setScreen(lastScreen);
+		minecraft.gui.setScreen(lastScreen);
 	}
 
 	public static class ErrorList extends ObjectSelectionList<Entry> {
@@ -239,25 +239,7 @@ public class KubeJSErrorScreen extends Screen {
 
 			this.indexText = Component.literal("#" + (index + 1)).getVisualOrderText();
 
-			var sourceLines = new ArrayList<>(line.sourceLines);
-			var scriptLineTextList = new ArrayList<String>();
-
-			for (int i = 0; i < sourceLines.size(); i++) {
-				if (sourceLines.get(i).source().endsWith(".java")) {
-					continue;
-				}
-
-				if (i >= 3) {
-					scriptLineTextList.add("...");
-					break;
-				} else {
-					scriptLineTextList.add(sourceLines.get(i).toString());
-				}
-			}
-
-			if (scriptLineTextList.isEmpty()) {
-				scriptLineTextList.add(this.line.type == LogType.WARN ? "Internal Warning" : "Internal Error");
-			}
+			var scriptLineTextList = getScriptLineTextList(line);
 
 			this.scriptLineText = Component.literal(String.join(" < ", scriptLineTextList)).getVisualOrderText();
 
@@ -306,6 +288,29 @@ public class KubeJSErrorScreen extends Screen {
 
 				this.totalStackTraceSize = firstStackTraceLine.size() + fullStackTraceText.size();
 			}
+		}
+
+		private ArrayList<String> getScriptLineTextList(ConsoleLine line) {
+			var sourceLines = new ArrayList<>(line.sourceLines);
+			var scriptLineTextList = new ArrayList<String>();
+
+			for (int i = 0; i < sourceLines.size(); i++) {
+				if (sourceLines.get(i).source().endsWith(".java")) {
+					continue;
+				}
+
+				if (i >= 3) {
+					scriptLineTextList.add("...");
+					break;
+				} else {
+					scriptLineTextList.add(sourceLines.get(i).toString());
+				}
+			}
+
+			if (scriptLineTextList.isEmpty()) {
+				scriptLineTextList.add(this.line.type == LogType.WARN ? "Internal Warning" : "Internal Error");
+			}
+			return scriptLineTextList;
 		}
 
 		@Override

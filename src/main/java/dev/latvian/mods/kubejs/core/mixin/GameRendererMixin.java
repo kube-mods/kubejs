@@ -17,19 +17,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GameRendererMixin {
 	@Shadow
 	@Final
-	Minecraft minecraft;
+	private Minecraft minecraft;
 
 	@Shadow
-	private @Nullable Identifier postEffectId;
-
-	@Shadow
-	public abstract void setPostEffect(Identifier identifier);
+	public abstract void setSpectatedEntityPostEffect(Identifier id);
 
 	@Inject(method = "checkEntityPostEffect", at = @At("HEAD"), cancellable = true)
 	private void kjs$checkEntityPostEffect(@Nullable Entity cameraEntity, CallbackInfo ci) {
 		var data = KubeSessionData.of(minecraft);
 		if (data != null && data.activePostShader != null) {
-			setPostEffect(data.activePostShader);
+			setSpectatedEntityPostEffect(data.activePostShader);
 			ci.cancel();
 		}
 	}

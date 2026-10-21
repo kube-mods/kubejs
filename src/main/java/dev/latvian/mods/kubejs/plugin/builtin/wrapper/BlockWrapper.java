@@ -103,7 +103,7 @@ public class BlockWrapper {
 	public static List<Identifier> getTaggedIds(Identifier tag) {
 		return Util.make(new LinkedList<>(), list -> {
 			for (var holder : BuiltInRegistries.BLOCK.getTagOrEmpty(Tags.block(tag))) {
-				var l = holder.getKey();
+				var l = holder.key();
 
 				if (l != null) {
 					list.add(l.identifier());

@@ -41,11 +41,11 @@ public interface AdvancementNodeKJS {
 	}
 
 	default Component kjs$getTitle() {
-		return kjs$self().advancement().display().map(DisplayInfo::getTitle).orElse(Component.empty());
+		return kjs$self().advancement().display().map(DisplayInfo::title).orElse(Component.empty());
 	}
 
 	default Component kjs$getDescription() {
-		return kjs$self().advancement().display().map(DisplayInfo::getDescription).orElse(Component.empty());
+		return kjs$self().advancement().display().map(DisplayInfo::description).orElse(Component.empty());
 	}
 
 	@Nullable

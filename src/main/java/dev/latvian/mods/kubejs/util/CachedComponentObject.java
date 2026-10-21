@@ -2,6 +2,7 @@ package dev.latvian.mods.kubejs.util;
 
 import dev.latvian.mods.kubejs.component.DataComponentWrapper;
 import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
+import dev.latvian.mods.kubejs.core.mixin.DataComponentPatchAccessorMixin;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,14 +22,18 @@ public record CachedComponentObject<T extends RegistryObjectKJS<T>, S>(UUID cach
 		buf.writeUtf(value.kjs$getId());
 		buf.writeVarInt(components.size());
 
-		for (var entry : components.entrySet()) {
+		var map = ((DataComponentPatchAccessorMixin) (Object) components).getMap();
+
+		for (var entry : map.reference2ObjectEntrySet()) {
 			var key = Objects.requireNonNull(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(entry.getKey()));
+			var mVal = entry.getValue();
+
 			buf.writeUtf(key.getNamespace());
 			buf.writeUtf(key.getPath());
-			buf.writeBoolean(entry.getValue().isPresent());
+			buf.writeBoolean(mVal != null);
 
-			if (entry.getValue().isPresent()) {
-				buf.writeVarInt(entry.getValue().get().hashCode());
+			if (mVal != null) {
+				buf.writeVarInt(mVal.hashCode());
 			}
 		}
 	}

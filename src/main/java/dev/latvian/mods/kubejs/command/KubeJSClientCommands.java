@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.latvian.mods.kubejs.KubeJSPaths;
 import dev.latvian.mods.kubejs.client.KubeJSClient;
 import dev.latvian.mods.kubejs.script.data.GeneratedData;
+import dev.latvian.mods.kubejs.util.PlatformUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -33,7 +34,7 @@ public class KubeJSClientCommands {
 			)
 			.then(Commands.literal("browse")
 				.executes(source -> {
-					Util.getPlatform().openPath(KubeJSPaths.DIRECTORY);
+					PlatformUtil.openPath(KubeJSPaths.DIRECTORY);
 					return 1;
 				}));
 	}

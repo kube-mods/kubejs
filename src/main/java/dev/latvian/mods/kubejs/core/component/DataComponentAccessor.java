@@ -1,11 +1,13 @@
 package dev.latvian.mods.kubejs.core.component;
 
+import com.mojang.authlib.GameProfile;
 import dev.latvian.mods.kubejs.color.KubeColor;
 import dev.latvian.mods.kubejs.component.CustomModelDataType;
 import dev.latvian.mods.kubejs.util.Cast;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
-import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
@@ -13,6 +15,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.LockCode;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Rarity;
@@ -27,6 +31,7 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.component.SeededContainerLoot;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 
@@ -125,7 +130,7 @@ public interface DataComponentAccessor extends DataComponentGetter, DataComponen
 		kjs$override(DataComponents.POTION_CONTENTS, new PotionContents(potion));
 	}
 
-	default void kjs$setEntityData(CompoundTag tag) {
+	default void kjs$setEntityData(Context cx, CompoundTag tag) {
 		if (tag.isEmpty()) {
 			kjs$remove(DataComponents.ENTITY_DATA);
 			return;
@@ -136,11 +141,11 @@ public interface DataComponentAccessor extends DataComponentGetter, DataComponen
 			throw new IllegalArgumentException("ENTITY_DATA tag must contain non-empty \"id\"");
 		}
 
-		var type = EntityType.byString(id.get()).orElseThrow(() -> new IllegalArgumentException("Unknown entity id: " + id));
+		var type = EntityType.by(TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccessContainer.of(cx), tag)).orElseThrow(() -> new IllegalArgumentException("Unknown entity id: " + id));
 		kjs$override(DataComponents.ENTITY_DATA, TypedEntityData.of(type, tag));
 	}
 
-	default void kjs$setProfile(com.mojang.authlib.GameProfile profile) {
+	default void kjs$setProfile(GameProfile profile) {
 		kjs$override(DataComponents.PROFILE, ResolvableProfile.createResolved(profile));
 	}
 
@@ -166,7 +171,7 @@ public interface DataComponentAccessor extends DataComponentGetter, DataComponen
 	}
 
 	default void kjs$setLockCode(ItemPredicate lock) {
-		kjs$override(DataComponents.LOCK, new net.minecraft.world.LockCode(lock));
+		kjs$override(DataComponents.LOCK, new LockCode(lock));
 	}
 
 	default void kjs$setContainerLootTable(ResourceKey<LootTable> lootTable) {

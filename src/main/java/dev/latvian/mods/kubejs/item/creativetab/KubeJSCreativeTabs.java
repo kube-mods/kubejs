@@ -19,7 +19,7 @@ public interface KubeJSCreativeTabs {
 		.title(CommonProperties.get().getCreativeModeTabName())
 		.icon(() -> {
 			var is = ItemStack.OPTIONAL_CODEC.parse(RegistryAccessContainer.BUILTIN.json(), CommonProperties.get().creativeModeTabIcon).result().orElse(ItemStack.EMPTY);
-			return is.isEmpty() ? Items.PURPLE_DYE.getDefaultInstance() : is;
+			return is.isEmpty() ? Items.DYE.purple().getDefaultInstance() : is;
 		})
 		.displayItems((params, output) -> {
 			for (var b : RegistryObjectStorage.ITEM) {

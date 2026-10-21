@@ -39,7 +39,7 @@ public record HolderSetWrapper<T>(Registry<T> registry, HolderSet<T> holders) im
 
 	public Set<Identifier> getKeys() {
 		return holders.stream().map(holder -> {
-			var key = holder.getKey();
+			var key = holder.key();
 			if (key == null) {
 				return null;
 			}

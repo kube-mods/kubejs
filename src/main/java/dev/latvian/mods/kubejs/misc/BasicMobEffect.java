@@ -69,7 +69,7 @@ public class BasicMobEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean isInstantenous() {
+	public boolean isInstantaneous() {
 		return instant && builder.effectTick != null;
 	}
 

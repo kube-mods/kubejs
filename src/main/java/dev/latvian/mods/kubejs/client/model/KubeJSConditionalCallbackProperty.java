@@ -3,11 +3,11 @@ package dev.latvian.mods.kubejs.client.model;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperty;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperty;
 import org.jspecify.annotations.Nullable;
 
 public record KubeJSConditionalCallbackProperty(Identifier id) implements ConditionalItemModelProperty {

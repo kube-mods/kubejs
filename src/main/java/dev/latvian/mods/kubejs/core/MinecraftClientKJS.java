@@ -6,7 +6,7 @@ import dev.latvian.mods.kubejs.client.KubeJSKeybinds;
 import dev.latvian.mods.kubejs.item.ItemClickedKubeEvent;
 import dev.latvian.mods.kubejs.net.FirstClickPayload;
 import dev.latvian.mods.kubejs.plugin.builtin.event.ItemEvents;
-import dev.latvian.mods.kubejs.plugin.builtin.wrapper.GLFWInputWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.SDLInputWrapper;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.typings.Info;
@@ -23,7 +23,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
+import org.lwjgl.system.MemoryStack;
 
 import java.util.function.Function;
 
@@ -72,11 +73,11 @@ public interface MinecraftClientKJS extends MinecraftEnvironmentKJS {
 
 	@Nullable
 	default Screen kjs$getCurrentScreen() {
-		return kjs$self().screen;
+		return kjs$self().gui.screen();
 	}
 
 	default void kjs$setCurrentScreen(Screen gui) {
-		kjs$self().setScreen(gui);
+		kjs$self().gui.setScreen(gui);
 	}
 
 	default void kjs$setTitle(String t) {
@@ -94,11 +95,11 @@ public interface MinecraftClientKJS extends MinecraftEnvironmentKJS {
 	}
 
 	default boolean kjs$isKeyDown(int key) {
-		return key != -1 && InputConstants.isKeyDown(kjs$self().getWindow(), key);
+		return key != -1 && InputConstants.isKeyDown(key);
 	}
 
 	default boolean kjs$isKeyDown(String keyName) {
-		return kjs$isKeyDown(GLFWInputWrapper.get(keyName));
+		return kjs$isKeyDown(SDLInputWrapper.get(keyName));
 	}
 
 	default boolean kjs$isKeyBindDown(String id) {
@@ -112,11 +113,18 @@ public interface MinecraftClientKJS extends MinecraftEnvironmentKJS {
 	}
 
 	default boolean kjs$isKeyMappingDown(KeyMapping key) {
-		if (key != null && !key.isUnbound() && key.isConflictContextAndModifierActive()) {
-			if (key.getKey().getType() == InputConstants.Type.KEYSYM) {
+		if (!key.isUnbound() && key.isConflictContextAndModifierActive()) {
+			if (key.getKey().getType() == InputConstants.Type.KEYBOARD) {
 				return kjs$isKeyDown(key.getKey().getValue());
 			} else if (key.getKey().getType() == InputConstants.Type.MOUSE) {
-				return GLFW.glfwGetMouseButton(kjs$self().getWindow().handle(), key.getKey().getValue()) == GLFW.GLFW_TRUE;
+				int button = key.getKey().getValue();
+				if (button < 1 || button > 32) {
+					return false;
+				}
+				try (MemoryStack stack = MemoryStack.stackPush()) {
+					int state = SDLMouse.SDL_GetMouseState(stack.mallocFloat(1), stack.mallocFloat(1));
+					return (state & (1 << (button - 1))) != 0;
+				}
 			}
 		}
 

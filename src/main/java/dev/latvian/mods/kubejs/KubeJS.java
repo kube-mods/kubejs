@@ -45,8 +45,8 @@ public class KubeJS {
 	public static final String MOD_ID = "kubejs";
 	public static final String MOD_NAME = "KubeJS";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
-	public static final int MC_VERSION_NUMBER = 2601;
-	public static final String MC_VERSION_STRING = "26.1";
+	public static final int MC_VERSION_NUMBER = 2603;
+	public static final String MC_VERSION_STRING = "26.3";
 	public static String QUERY;
 	public static String VERSION = "0";
 	public static String DISPLAY_NAME = "KubeJS";
@@ -154,6 +154,7 @@ public class KubeJS {
 			NeoForgeMod.enableMilkFluid();
 			// KubeJSComponents.REGISTRY.register(bus);
 			KubeJSRecipeSerializers.REGISTRY.register(bus);
+			KubeJSRecipeSerializers.TYPES.register(bus);
 			KubeJSMenus.REGISTRY.register(bus);
 			KubeJSIngredients.REGISTRY.register(bus);
 			KubeJSFluidIngredients.REGISTRY.register(bus);

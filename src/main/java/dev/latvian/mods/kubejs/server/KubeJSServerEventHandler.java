@@ -65,7 +65,7 @@ public class KubeJSServerEventHandler {
 
 		Identifier id = event.getName();
 		LootTable table = event.getTable();
-		HolderLookup.Provider registries = event.getRegistries();
+		HolderLookup.Provider registries = (HolderLookup.Provider) event.getRegistries();
 
 		try {
 			var ops = registries.createSerializationContext(JsonOps.INSTANCE);

@@ -1,11 +1,11 @@
 package dev.latvian.mods.kubejs.block;
 
-import dev.latvian.mods.kubejs.block.callback.AfterEntityFallenOnBlockCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockExplodedCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateMirrorCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateModifyCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateModifyPlacementCallback;
 import dev.latvian.mods.kubejs.block.callback.BlockStateRotateCallback;
+import dev.latvian.mods.kubejs.block.callback.BounceRestitutionCallback;
 import dev.latvian.mods.kubejs.block.callback.CanBeReplacedCallback;
 import dev.latvian.mods.kubejs.block.callback.EntityBlockCallback;
 import dev.latvian.mods.kubejs.block.callback.EntityFallenOnBlockCallback;
@@ -52,7 +52,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -71,6 +71,7 @@ import java.util.function.Predicate;
 public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 	private static final BlockBehaviour.StatePredicate ALWAYS_FALSE_STATE_PREDICATE = (blockState, blockGetter, blockPos) -> false;
 	private static final BlockBehaviour.StateArgumentPredicate<?> ALWAYS_FALSE_STATE_ARG_PREDICATE = (blockState, blockGetter, blockPos, type) -> false;
+	private static final BlockBehaviour.StateArgumentPredicate<AABB> ALWAYS_FALSE_AABB_PREDICATE = ((blockState, blockGetter, blockPos, aabb) -> false);
 
 	public transient @Nullable Block copyPropertiesFrom;
 	public transient @Nullable SoundType soundType;
@@ -105,7 +106,7 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 	public transient @Nullable Consumer<EntityBlockCallback> insideCallback;
 	public transient @Nullable Consumer<EntityBlockCallback> stepOnCallback;
 	public transient @Nullable Consumer<EntityFallenOnBlockCallback> fallOnCallback;
-	public transient @Nullable Consumer<AfterEntityFallenOnBlockCallback> afterFallenOnCallback;
+	public transient @Nullable Consumer<BounceRestitutionCallback> bounceRestitutionCallback;
 	public transient @Nullable Consumer<BlockExplodedCallback> explodedCallback;
 	public transient @Nullable Consumer<BlockStateRotateCallback> rotateStateModification;
 	public transient @Nullable Consumer<BlockStateMirrorCallback> mirrorStateModification;
@@ -198,7 +199,7 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		var pool = new LootPool.Builder();
 
 		if (blockDrops.rolls() != null) {
-			pool.setRolls(blockDrops.rolls());
+			pool.setRolls(Holder.direct(blockDrops.rolls()));
 		}
 
 		pool.when(ExplosionCondition.survivesExplosion());
@@ -211,11 +212,11 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 			var item = LootItem.lootTableItem(drop.getItem());
 
 			if (drop.getCount() > 1) {
-				item.apply(SetItemCountFunction.setCount(ConstantValue.exactly(drop.getCount())));
+				item.apply(SetItemCountFunction.setCount(Holder.direct(new ConstantValue(drop.getCount()))));
 			}
 
 			if (!drop.isComponentsPatchEmpty()) {
-				item.apply(LootItemConditionalFunction.simpleBuilder(c -> new SetComponentsFunction(c, drop.getComponentsPatch())));
+				item.apply(LootItemConditionalFunction.simpleBuilder(c -> Holder.direct(new SetComponentsFunction(c, drop.getComponentsPatch())).value()));
 			}
 
 			pool.add(item);
@@ -692,20 +693,16 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		return this;
 	}
 
-	@Info("""
-		Bounces entities that land on this block by bounciness * their fall velocity.
-		Do not make bounciness negative, as that is a recipe for a long and laggy trip to the void
-		""")
-	public BlockBuilder bounciness(float bounciness) {
-		return afterFallenOn(ctx -> ctx.bounce(bounciness));
+	@Info("Bounces entities that land on this by restitution * their fall velocity. Negative is clamped to 0")
+	public BlockBuilder restitution(float restitution) {
+		float clamped = Math.max(0F, restitution);
+		bounceRestitutionCallback = ctx -> ctx.restitution(clamped);
+		return this;
 	}
 
-	@Info("""
-		Set how this block bounces/moves entities that land on top of this. Do not use this to modify the block, use fallOn instead!
-		Use ctx.bounce(height) or ctx.setVelocity(x, y, z) to change the entities velocity.
-		""")
-	public BlockBuilder afterFallenOn(Consumer<AfterEntityFallenOnBlockCallback> callbackJS) {
-		afterFallenOnCallback = callbackJS;
+	@Info("Set the restitution when an entity lands on this. Takes precedence over restitution(float)")
+	public BlockBuilder restitution(Consumer<BounceRestitutionCallback> callbackJS) {
+		bounceRestitutionCallback = callbackJS;
 		return this;
 	}
 
@@ -813,7 +810,7 @@ public abstract class BlockBuilder extends ModelledBuilderBase<Block> {
 		}
 
 		if (!viewBlocking) {
-			properties.isViewBlocking(ALWAYS_FALSE_STATE_PREDICATE);
+			properties.isViewBlocking(ALWAYS_FALSE_AABB_PREDICATE);
 		}
 
 		if (!redstoneConductor) {

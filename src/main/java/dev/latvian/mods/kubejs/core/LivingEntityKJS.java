@@ -25,6 +25,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -77,12 +78,16 @@ public interface LivingEntityKJS extends EntityKJS {
 		return new EntityPotionEffectsJS(kjs$self());
 	}
 
+	default void kjs$swing(InteractionHand hand, SwingAnimation swingAnimation) {
+		kjs$self().swing(hand, swingAnimation, true);
+	}
+
 	default void kjs$swing(InteractionHand hand) {
-		kjs$self().swing(hand, true);
+		kjs$self().swing(hand, SwingAnimation.DEFAULT, true);
 	}
 
 	default void kjs$swing() {
-		kjs$self().swing(InteractionHand.MAIN_HAND, true);
+		kjs$self().swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
 	}
 
 	default ItemStack kjs$getEquipment(EquipmentSlot slot) {

@@ -1,7 +1,7 @@
 import com.almostreliable.almostgradle.dependency.LoadingMode
 
 plugins {
-	id("net.neoforged.moddev") version "2.0.138"
+	id("net.neoforged.moddev") version "2.0.147"
 	id("com.almostreliable.almostgradle") version "2.1.1"
 	id("idea")
 	// id("me.shedaniel.unified-publishing") version "0.1.+"
@@ -34,17 +34,17 @@ almostgradle.setup {
 			minecraftVersion = "1.21.1"
 		}*/
 
-		rei {
-			runConfig = true
-			mode = LoadingMode.API
-			version = "21.11.814"
-			minecraftVersion = "1.21.1"
-		}
+//		rei {
+//			runConfig = true
+//			mode = LoadingMode.API
+//			version = "21.11.814"
+//			minecraftVersion = "1.21.1"
+//		}
 
 		jei {
 			runConfig = true
 			mode = LoadingMode.API
-			version = "29.6.2.31"
+			version = "31.7.0.47"
 		}
 	}
 }
@@ -53,6 +53,7 @@ val rhinoVersion: String by project
 val tinyServerVersion: String by project
 val gifLibVersion: String by project
 val batVersion: String by project
+val emiVersion: String by project
 
 println("Building version: ${project.version}")
 
@@ -64,6 +65,7 @@ neoForge {
 }
 
 repositories {
+	mavenLocal()
 	maven {
 		setUrl("https://maven.shedaniel.me/")
 		content {
@@ -92,6 +94,18 @@ repositories {
 			includeGroup("com.github.rtyley")
 		}
 	}
+	// SEMI (Seasonal EMI): EMI ported to 26.3, keeps EMI's API and the "emi" mod id
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "SEMI maven"
+				setUrl("https://raw.githubusercontent.com/Pandaismyname1/SEMI/maven")
+			}
+		}
+		filter {
+			includeGroup("dev.emi")
+		}
+	}
 	mavenCentral()
 }
 
@@ -104,8 +118,9 @@ dependencies {
 		}
 	}
 
-	// not updated to 26.1 yet
+	// not updated to 26.3 yet?
 	/*compileOnly("dev.architectury:architectury-neoforge:$archVersion")*/
+	compileOnly("dev.emi:semi-neoforge:$emiVersion:api")
 
 	jarJar(implementation("dev.latvian.apps:tiny-java-server") {
 		version {
