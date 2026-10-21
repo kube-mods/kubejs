@@ -19,10 +19,14 @@ public interface NBTIOWrapper {
 		return NbtIo.readCompressed(Files.newInputStream(path), NbtAccounter.unlimitedHeap());
 	}
 
-	static void write(Path path, CompoundTag nbt) throws IOException {
-		if (nbt == null) {
+	static void write(Path path, @Nullable CompoundTag nbt) throws IOException {
+		if (nbt == null || nbt.isEmpty()) {
 			Files.deleteIfExists(path);
 			return;
+		}
+
+		if (Files.notExists(path.getParent())) {
+			Files.createDirectories(path.getParent());
 		}
 
 		NbtIo.writeCompressed(nbt, Files.newOutputStream(path));
