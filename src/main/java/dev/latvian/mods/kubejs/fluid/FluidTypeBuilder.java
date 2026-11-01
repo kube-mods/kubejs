@@ -3,6 +3,8 @@ package dev.latvian.mods.kubejs.fluid;
 import dev.latvian.mods.kubejs.block.BlockRenderType;
 import dev.latvian.mods.kubejs.color.KubeColor;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
@@ -68,7 +70,7 @@ public class FluidTypeBuilder extends BuilderBase<FluidType> {
 	}
 
 	public FluidTypeBuilder screenOverlayTexture(ResourceLocation screenOverlayTexture) {
-		this.screenOverlayTexture = screenOverlayTexture;
+		this.screenOverlayTexture = screenOverlayTexture.withPath(ID.PNG_TEXTURE);
 		return this;
 	}
 
