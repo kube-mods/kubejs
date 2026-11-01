@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Fixed dynamic resource bindings not loading from mod jars (#1201)
+- Fixed Architectury integration crashing (#1196)
 
 ## [8.0.7] - 2026-10-15
 - /

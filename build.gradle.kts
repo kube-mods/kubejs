@@ -53,6 +53,7 @@ val rhinoVersion: String by project
 val tinyServerVersion: String by project
 val gifLibVersion: String by project
 val batVersion: String by project
+val archVersion: String by project
 
 println("Building version: ${project.version}")
 
@@ -104,8 +105,7 @@ dependencies {
 		}
 	}
 
-	// not updated to 26.1 yet
-	/*compileOnly("dev.architectury:architectury-neoforge:$archVersion")*/
+	compileOnly("dev.architectury:architectury-neoforge:$archVersion")
 
 	jarJar(implementation("dev.latvian.apps:tiny-java-server") {
 		version {
