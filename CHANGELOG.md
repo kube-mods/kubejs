@@ -1,6 +1,9 @@
 # changelog
 
 ## Unreleased
+- /
+
+## [8.0.8] - 2026-11-01
 
 - Fixed dynamic resource bindings not loading from mod jars (#1201)
 - Fixed Architectury integration crashing (#1196)
