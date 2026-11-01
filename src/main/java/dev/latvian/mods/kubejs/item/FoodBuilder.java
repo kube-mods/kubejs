@@ -38,7 +38,8 @@ public class FoodBuilder {
 
 	public FoodBuilder(FoodProperties properties) {
 		this.nutrition = properties.nutrition();
-		this.saturation = properties.saturation();
+		// saturation is a modifier (see docs below), but FoodProperties stores the final value
+		this.saturation = properties.nutrition() == 0 ? 0F : properties.saturation() / (properties.nutrition() * 2F);
 		this.alwaysEdible = properties.canAlwaysEat();
 		this.eatSeconds = properties.eatSeconds();
 		this.usingConvertsTo = properties.usingConvertsTo();
