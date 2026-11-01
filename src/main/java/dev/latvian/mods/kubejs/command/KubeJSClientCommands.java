@@ -3,7 +3,9 @@ package dev.latvian.mods.kubejs.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.latvian.mods.kubejs.KubeJSPaths;
+import dev.latvian.mods.kubejs.client.EditorExt;
 import dev.latvian.mods.kubejs.client.KubeJSClient;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.data.GeneratedData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
@@ -31,6 +33,20 @@ public class KubeJSClientCommands {
 					.executes(context -> reloadLang(context.getSource()))
 				)
 			)
+			.then(Commands.literal("logs")
+				.then(Commands.literal("startup")
+					.requires(source -> true)
+					.executes(context -> logs(context.getSource(), ScriptType.STARTUP))
+				)
+				.then(Commands.literal("server")
+					.requires(source -> true)
+					.executes(context -> logs(context.getSource(), ScriptType.SERVER))
+				)
+				.then(Commands.literal("client")
+					.requires(source -> true)
+					.executes(context -> logs(context.getSource(), ScriptType.CLIENT))
+				)
+			)
 			.then(Commands.literal("browse")
 				.executes(source -> {
 					Util.getPlatform().openPath(KubeJSPaths.DIRECTORY);
@@ -41,6 +57,15 @@ public class KubeJSClientCommands {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(clientCommands("kubejs"));
 		dispatcher.register(clientCommands("kjs"));
+	}
+
+	private static int logs(CommandSourceStack source, ScriptType type) {
+		EditorExt.openFile(type.getLogFile(), 0, 0);
+		source.sendSystemMessage(
+			Component.literal("The log file for %s scripts can be found at ".formatted(type.name))
+				.append(Component.literal("[%s]".formatted(type.getLogFile())).kjs$aqua().kjs$hover(Component.literal("Click to open")).kjs$clickOpenFile(type.getLogFile().toString()))
+		);
+		return 1;
 	}
 
 	private static int reloadClient(CommandSourceStack source) {

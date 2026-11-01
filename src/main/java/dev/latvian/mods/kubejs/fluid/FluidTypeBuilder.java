@@ -4,6 +4,7 @@ import dev.latvian.mods.kubejs.block.BlockRenderType;
 import dev.latvian.mods.kubejs.block.BlockTintFunction;
 import dev.latvian.mods.kubejs.color.KubeColor;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.rhino.util.ReturnsSelf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.Identifier;
@@ -71,7 +72,7 @@ public class FluidTypeBuilder extends BuilderBase<FluidType> {
 	}
 
 	public FluidTypeBuilder screenOverlayTexture(Identifier screenOverlayTexture) {
-		this.screenOverlayTexture = screenOverlayTexture;
+		this.screenOverlayTexture = screenOverlayTexture.withPath(ID.PNG_TEXTURE);
 		return this;
 	}
 

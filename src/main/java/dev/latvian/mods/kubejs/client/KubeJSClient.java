@@ -19,6 +19,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -42,7 +43,7 @@ import java.util.Map;
 
 public class KubeJSClient extends KubeJSCommon {
 	public static final Identifier WHITE_TEXTURE = Identifier.parse("textures/misc/white.png");
-	public static final Identifier RECIPE_BUTTON_TEXTURE = Identifier.parse("textures/gui/recipe_button.png");
+	public static final Identifier RECIPE_BUTTON_TEXTURE = RecipeBookComponent.RECIPE_BUTTON_SPRITES.enabled();
 
 	public static final Map<GeneratedDataStage, VirtualAssetPack> CLIENT_PACKS = new EnumMap<>(GeneratedDataStage.class);
 	public static List<ItemTooltipData> clientItemTooltips = List.of();
