@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,17 +49,18 @@ public class ModResourceBindings {
 	}
 
 	public void readBindings(String modId, IModFile mod) throws IOException {
-		var resource = mod.getFilePath().resolve("kubejs.bindings.txt");
-		if (Files.exists(resource)) {
-			try (var lines = Files.lines(resource)) {
-				@SuppressWarnings("NullableProblems") // there's no problem here idea you're smoking
-				List<BindingProvider> providers = lines.map(s -> s.split("#", 2)[0].trim())
-					.filter(line -> !line.isBlank())
-					.map(line -> createProvider(modId, line))
-					.filter(Objects::nonNull).toList();
-				bindings.put(modId, providers);
-			}
+		var data = mod.getContents().readFile("kubejs.bindings.txt");
+		if (data == null) {
+			return;
 		}
+		@SuppressWarnings("NullableProblems") // there's no problem here idea you're smoking
+		List<BindingProvider> providers = new String(data, StandardCharsets.UTF_8).lines()
+			.map(s -> s.split("#", 2)[0].trim())
+			.filter(line -> !line.isBlank())
+			.map(line -> createProvider(modId, line))
+			.filter(Objects::nonNull)
+			.toList();
+		bindings.put(modId, providers);
 	}
 
 	@Nullable

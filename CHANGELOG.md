@@ -1,7 +1,8 @@
 # changelog
 
 ## Unreleased
-- /
+
+- Fixed dynamic resource bindings not loading from mod jars (#1201)
 
 ## [8.0.7] - 2026-10-15
 - /
