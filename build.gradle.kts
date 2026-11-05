@@ -23,7 +23,7 @@ almostgradle.setup {
 	withAccessTransformerValidation = !runningInCI
 
 	tests {
-
+		jUnit = true
 	}
 
 	recipeViewers {
