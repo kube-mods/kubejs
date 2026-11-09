@@ -1,7 +1,7 @@
 package dev.latvian.mods.kubejs.color;
 
 import com.mojang.serialization.Codec;
-import dev.latvian.mods.kubejs.codec.KubeJSCodecs;
+import dev.latvian.mods.kubejs.codec.KubeJSCodecUtil;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.ColorWrapper;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.util.RemapForJS;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RemapPrefixForJS("kjs$")
 public interface KubeColor extends SpecialEquality {
-	Codec<KubeColor> CODEC = KubeJSCodecs.stringResolverCodec(KubeColor::kjs$serialize, ColorWrapper::wrap);
+	Codec<KubeColor> CODEC = KubeJSCodecUtil.stringResolverCodec(KubeColor::kjs$serialize, ColorWrapper::wrap);
 	StreamCodec<ByteBuf, KubeColor> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 	StreamCodec<ByteBuf, Optional<KubeColor>> OPTIONAL_STREAM_CODEC = ByteBufCodecs.optional(STREAM_CODEC);
 

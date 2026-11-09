@@ -3,7 +3,7 @@ package dev.latvian.mods.kubejs.util;
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import dev.latvian.mods.kubejs.codec.KubeJSCodecs;
+import dev.latvian.mods.kubejs.codec.KubeJSCodecUtil;
 import dev.latvian.mods.rhino.regexp.NativeRegExp;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Pattern;
 
 public interface RegExpKJS {
-	Codec<Pattern> CODEC = KubeJSCodecs.stringResolverCodec(RegExpKJS::toRegExpString, RegExpKJS::wrap);
+	Codec<Pattern> CODEC = KubeJSCodecUtil.stringResolverCodec(RegExpKJS::toRegExpString, RegExpKJS::wrap);
 	StreamCodec<ByteBuf, Pattern> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(RegExpKJS::wrap, RegExpKJS::toRegExpString);
 
 	@Nullable

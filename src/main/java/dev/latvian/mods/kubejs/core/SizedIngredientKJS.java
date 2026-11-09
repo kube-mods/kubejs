@@ -1,7 +1,7 @@
 package dev.latvian.mods.kubejs.core;
 
 import com.google.gson.JsonElement;
-import dev.latvian.mods.kubejs.codec.KubeJSCodecs;
+import dev.latvian.mods.kubejs.codec.KubeJSCodecUtil;
 import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IngredientWrapper;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
@@ -43,10 +43,10 @@ public interface SizedIngredientKJS extends Replaceable, IngredientSupplierKJS, 
 	}
 
 	default JsonElement kjs$toFlatJson() {
-		return KubeJSCodecs.toJsonOrThrow(kjs$self(), SizedIngredient.FLAT_CODEC);
+		return KubeJSCodecUtil.toJsonOrThrow(kjs$self(), SizedIngredient.FLAT_CODEC);
 	}
 
 	default JsonElement kjs$toNestedJson() {
-		return KubeJSCodecs.toJsonOrThrow(kjs$self(), SizedIngredient.NESTED_CODEC);
+		return KubeJSCodecUtil.toJsonOrThrow(kjs$self(), SizedIngredient.NESTED_CODEC);
 	}
 }
