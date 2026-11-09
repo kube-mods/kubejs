@@ -2,7 +2,7 @@ package dev.latvian.mods.kubejs.script;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import dev.latvian.mods.kubejs.codec.KubeJSCodecs;
+import dev.latvian.mods.kubejs.codec.KubeJSCodecUtil;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.util.Cast;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
@@ -87,7 +87,7 @@ public class TypeWrapperRegistry {
 				return Cast.to(o);
 			} else {
 				var s = o.toString();
-				return s.isEmpty() ? defaultValue : KubeJSCodecs.byName(codec, forceLowerCase ? s.toLowerCase(Locale.ROOT) : s);
+				return s.isEmpty() ? defaultValue : KubeJSCodecUtil.byName(codec, forceLowerCase ? s.toLowerCase(Locale.ROOT) : s);
 			}
 		});
 	}
