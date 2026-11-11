@@ -1,5 +1,6 @@
 package dev.latvian.mods.kubejs.command;
 
+import dev.latvian.mods.kubejs.CommonProperties;
 import dev.latvian.mods.kubejs.ingredient.NamespaceIngredient;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet;
@@ -27,9 +28,15 @@ public class InformationCommands {
 	}
 
 	private static Component copy(Component c, Component info) {
+		String textToCopy = c.getString();
+		
+		if (textToCopy.startsWith("'") && textToCopy.endsWith("'") && CommonProperties.get().useDoubleQuotes) {
+			textToCopy = "\"" + textToCopy.substring(1, textToCopy.length() - 1) + "\"";
+		}
+		
 		return Component.literal("- ")
 			.withStyle(ChatFormatting.GRAY)
-			.withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, c.getString())))
+			.withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, textToCopy)))
 			.withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, info.copy().append(" (Click to copy)"))))
 			.append(c);
 	}
