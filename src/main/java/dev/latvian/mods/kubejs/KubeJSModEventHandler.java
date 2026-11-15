@@ -50,7 +50,7 @@ public class KubeJSModEventHandler {
 		UtilsJS.postItemModificationEvents(event);
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOW)
 	public static void modifyRecipeJsons(ModifyRecipeJsonsEvent event) {
 		if (!RecipesKubeEvent.INSTANCE.isBound()) {
 			KubeJS.LOGGER.warn("Recipe event is not bound, is another mod calling ModifyRecipeJsonsEvent?!");
