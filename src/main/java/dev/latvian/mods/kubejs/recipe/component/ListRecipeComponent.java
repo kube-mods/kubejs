@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.KubeJS;
-import dev.latvian.mods.kubejs.codec.KubeJSCodecs;
+import dev.latvian.mods.kubejs.codec.KubeJSCodecUtil;
 import dev.latvian.mods.kubejs.error.RecipeComponentTooLargeException;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
@@ -43,7 +43,7 @@ public record ListRecipeComponent<T>(
 		var listTypeInfo = TypeInfo.RAW_LIST.withParams(typeInfo);
 
 		if (canWriteSelf) {
-			listCodec = KubeJSCodecs.listOfOrSelf(listCodec, codec);
+			listCodec = KubeJSCodecUtil.listOfOrSelf(listCodec, codec);
 			listTypeInfo = listTypeInfo.or(typeInfo);
 		}
 
