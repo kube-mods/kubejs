@@ -6,9 +6,11 @@ import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ModResourceBindings;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforgespi.language.ModFileScanData;
 import net.neoforged.neoforgespi.locating.IModFile;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,13 +41,21 @@ public class KubeJSPlugins {
 		}
 	}
 
-	/// Given a mod file, checks if it has a file defining KubeJS plugins, class filter rules, or bindings,
-	/// and tries to load them if they exist.
+	/// Given a mod file, checks if it has a class annotated with [KubeJSPluginEntrypoint], a file defining
+	/// KubeJS plugins, class filter rules, or bindings, and tries to load them if they exist.
 	///
-	/// For plugin syntax, see [#loadFromFile(java.util.stream.Stream, java.lang.String, boolean)],
+	/// For plugin file syntax, see [#loadFromFile(java.util.stream.Stream, java.lang.String, boolean)],
 	/// and for bindings, see [ModResourceBindings]. Class filter syntax simply consists have lines
 	/// starting with either a '+' (allow) or '-' (deny) followed by a class or package name.
 	private static void loadMod(String modId, IModFile mod, boolean loadClientPlugins) throws IOException {
+		mod.getScanResult().getAnnotatedBy(KubeJSPluginEntrypoint.class, ElementType.TYPE).forEach(data -> {
+			try {
+				loadFromAnnotation(data, loadClientPlugins);
+			} catch (Exception ex) {
+				throw new RuntimeException("Failed to load KubeJS plugin", ex);
+			}
+		});
+
 		var contents = mod.getContents();
 
 		var pluginData = contents.readFile("kubejs.plugins.txt");
@@ -59,6 +69,53 @@ public class KubeJSPlugins {
 		}
 
 		BINDINGS.readBindings(modId, mod);
+	}
+
+	/// Tries to load KubeJS plugin based on the [KubeJSPluginEntrypoint] annotation.
+	///
+	/// The annotation must be placed on a class that implements [KubeJSPlugin].
+	/// The `clientOnly` field determines whether the plugin should only be loaded on the client side.
+	/// The `requiredMods` field specifies a list of mod ids that must be present for the plugin to be loaded.
+	private static void loadFromAnnotation(ModFileScanData.AnnotationData data, boolean loadClientPlugins) {
+		KubeJS.LOGGER.info("Found annotated plugin entrypoint {}", data.memberName());
+
+		var clientOnly = (boolean) data.annotationData().getOrDefault("clientOnly", false);
+		if (clientOnly && !loadClientPlugins) {
+			if (DevProperties.get().logSkippedPlugins) {
+				KubeJS.LOGGER.warn("Plugin " + data.memberName() + " does not load on server side, skipping");
+			}
+			return;
+		}
+
+		//noinspection unchecked
+		var requiredMods = (List<String>) data.annotationData().getOrDefault("requiredMods", Collections.emptyList());
+		for (var modId : requiredMods) {
+			if (!ModList.get().isLoaded(modId)) {
+				if (DevProperties.get().logSkippedPlugins) {
+					KubeJS.LOGGER.warn("Plugin " + data.memberName() + " does not have required mod '" + modId + "' loaded, skipping");
+				}
+				return;
+			}
+		}
+
+		Class<?> pluginClass;
+		try {
+			pluginClass = Class.forName(data.memberName());
+		} catch (Throwable t) {
+			KubeJS.LOGGER.error("Failed to load plugin {}: {}", data.memberName(), t);
+			return;
+		}
+
+		if (!KubeJSPlugin.class.isAssignableFrom(pluginClass)) {
+			KubeJS.LOGGER.error("Plugin {} does not implement KubeJSPlugin interface", data.memberName());
+			return;
+		}
+
+		try {
+			LIST.add((KubeJSPlugin) pluginClass.getDeclaredConstructor().newInstance());
+		} catch (Throwable t) {
+			KubeJS.LOGGER.error("Failed to init KubeJS plugin {}: {}", data.memberName(), t);
+		}
 	}
 
 	/// Tries to load KubeJS plugins based on the contents of a `kubejs.plugins.txt` file.
